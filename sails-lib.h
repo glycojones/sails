@@ -51,7 +51,7 @@
 #include <clipper/clipper.h>
 #include <clipper/clipper-mmdb.h>
 #include <clipper/clipper-minimol.h>
-#include "privateer-ss-find.h"
+#include "sails-find.h"
 
 
 namespace privateer

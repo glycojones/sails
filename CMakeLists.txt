@@ -17,11 +17,10 @@ find_package(CCP4 REQUIRED mmdb2 ccp4c ccp4srs clipper-core clipper-mmdb clipper
 #
 
 if(APPLE)
-    find_program(PYTHON NAMES $ENV{PYTHON} ccp4-python python
-                        HINTS ${CMAKE_INSTALL_PREFIX}/bin
-                        PATHS [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
+    find_program(PYTHON NAMES $ENV{PYTHON} python3.7 ccp4-python
+                        HINTS /usr/local/bin /usr/bin ${CMAKE_INSTALL_PREFIX}/bin )
 else()
-    find_program(PYTHON NAMES $ENV{PYTHON} ccp4-python python python.exe
+    find_program(PYTHON NAMES $ENV{PYTHON} ccp4-python python3.7 python3.6 python.exe
                         HINTS ${CMAKE_INSTALL_PREFIX}/bin
                         PATHS [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
 endif()
@@ -38,9 +37,16 @@ else()
 endif()
 
 message(STATUS "Python sys.prefix: ${_PY_PREFIX}")
-find_library(PYTHON_LIBRARY NAMES python
-             HINTS ${_PY_PREFIX}/lib ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/libs
-             NO_DEFAULT_PATH)
+
+if (APPLE)
+  find_library(PYTHON_LIBRARY NAMES python3.7 python
+               HINTS /usr/local/lib ${_PY_PREFIX}/lib
+               NO_DEFAULT_PATH)
+else()
+  find_library(PYTHON_LIBRARY NAMES python3.7
+               HINTS ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/lib ${_PY_PREFIX}/libs
+               NO_DEFAULT_PATH)
+endif()
 
 if (NOT PYTHON_LIBRARY)
     message(FATAL_ERROR "Python library not found.")
@@ -48,10 +54,16 @@ endif()
 
 message(STATUS "Python library: ${PYTHON_LIBRARY}")
 
+if (APPLE)
 find_path(PYTHON_INCLUDE_DIR NAMES Python.h
-          HINTS ${_PY_PREFIX}/include
+          HINTS /usr/local/Frameworks/Python.framework/Headers
                 ${_PY_PREFIX}/include/python
           NO_DEFAULT_PATH)
+else()
+  find_path(PYTHON_INCLUDE_DIR NAMES Python.h
+            HINTS ${_PY_PREFIX}/include/python
+            NO_DEFAULT_PATH)
+endif()
 
 message(STATUS "Python.h is in: ${PYTHON_INCLUDE_DIR}")
 
@@ -93,9 +105,9 @@ add_executable(sails_exec
 
 target_link_libraries ( sails_exec sails_lib ${CCP4_LIBRARIES} )
 
-set_target_properties ( sails_lib    PROPERTIES OUTPUT_NAME privateer )
-set_target_properties ( sails_exec   PROPERTIES OUTPUT_NAME privateer )
-set_target_properties ( sails_module PROPERTIES OUTPUT_NAME privateer )
+set_target_properties ( sails_lib    PROPERTIES OUTPUT_NAME sails )
+set_target_properties ( sails_exec   PROPERTIES OUTPUT_NAME sails )
+set_target_properties ( sails_module PROPERTIES OUTPUT_NAME sails )
 
 target_link_libraries ( sails_module PRIVATE sails_lib ${CCP4_LIBRARIES} ${pybind11_LIBRARIES} )
 

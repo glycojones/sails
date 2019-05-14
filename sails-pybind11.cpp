@@ -17,7 +17,7 @@ using namespace pybind11::literals;
 
 // pybind11 module definition
 //
-PYBIND11_MODULE(privateer, m)
+PYBIND11_MODULE(sails, m)
 {
   m.doc() = "Sails's Python interface.\nVersion history:\n- 2019-present MKI (pybind11)"; // docstring
 

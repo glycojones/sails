@@ -45,7 +45,7 @@
 //L  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //L  MA 02111-1307 USA
 
-#include "privateer-lib.h"
+#include "sails-lib.h"
 
 void privateer::insert_coot_prologue_scheme ( std::fstream& output )
 {
@@ -303,7 +303,7 @@ clipper::MiniMol privateer::build_sugars ( clipper::Xmap<float>& xwrk, privateer
 
     clipper::MAtom peak_atom, void_atom;
     clipper::MMonomer peaks, voids, ideal;
-    
+
     ideal = privateer::get_ideal_monomer ( privateer::data::fingerprint_list[0] );
     peaks = privateer::get_peak_monomer  ( privateer::data::fingerprint_list[0] );
     voids = privateer::get_void_monomer  ( privateer::data::fingerprint_list[0] );
@@ -434,7 +434,7 @@ const privateer::data::fingerprint privateer::data::fingerprint_list[] =
           { "PK1", 3.031, 0.678, -2.389 }, { "PK1", -0.699, 0.854, 3.364 }, { "PK1", -1.386, 0.144, 4.516 },
           { "PK1", -0.002, -0.007, 2.517 }, { "PK1", -1.338, 0.547, -0.016 }, { "PK1", 0.061, -0.095, -2.424 },
           { "PK1", 3.139, -0.092, -3.582 }, { "PK1", -0.76, 2.089, 3.2 }, { "PK1", 3.064, 0.507, 2.434 } } ,
-        { { "VD1", 5.25, 1.25, 3.5 }, { "VD1", 5, -0.5, -1.25 }, { "VD1", -2.75, -8.88178e-16, 2 }, 
+        { { "VD1", 5.25, 1.25, 3.5 }, { "VD1", 5, -0.5, -1.25 }, { "VD1", -2.75, -8.88178e-16, 2 },
           { "VD1", 3.5, -5, 1 }, { "VD1", 1, 1.5, -4.25 }, { "VD1", -3.25, -3.5, -3 },
           { "VD1", -1, 5, 2.5 }, { "VD1", 8.88178e-16, -2, 5.75 }, { "VD1", -4.5, 3.25, -2.75 },
           { "VD1", 6.5, -2.5, 3 }, { "VD1", 2.5, 5.75, -2 }, { "VD1", -2.25, -5.75, 1.5 } } ,
@@ -443,8 +443,8 @@ const privateer::data::fingerprint privateer::data::fingerprint_list[] =
           { "ATM", -0.699, 0.854, 3.364 }, { "ATM", -1.386, 0.144, 4.516 }, { "ATM", -0.002, -0.007, 2.517 },
           { "ATM", -1.338, 0.547, -0.016 }, { "ATM", 0.061, -0.095, -2.424 }, { "ATM", 2.887, 0.396, 0.013 },
           { "ATM", 3.139, -0.092, -3.582 }, { "ATM", -0.76, 2.089, 3.2 }, { "ATM", 3.064, 0.507, 2.434 } }
-    
-        
+
+
     },
 
     {
@@ -454,6 +454,3 @@ const privateer::data::fingerprint privateer::data::fingerprint_list[] =
         { { "C", 0.0, 0.0, 0.0 }, { "C", 0.0, 0.0, 0.0 }, { "C", 0.0, 0.0, 0.0 } }
     }
 };
-
-
-
