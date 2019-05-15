@@ -11,7 +11,9 @@ if(NOT DEFINED LIB_INSTALL_DIR)
 endif()
 
 find_package(CCP4 REQUIRED mmdb2 ccp4c ccp4srs clipper-core clipper-mmdb clipper-minimol
-                           clipper-contrib clipper-ccp4 clipper-cif )
+clipper-contrib clipper-ccp4 clipper-cif )
+
+find_package(GSL REQUIRED)
 
 ## Find Python stuff
 #
@@ -54,6 +56,9 @@ endif()
 
 message(STATUS "Python library: ${PYTHON_LIBRARY}")
 
+# Rely on Homebrew Python 3.7 until CCP4 bundle it in
+# TODO: update upon release
+
 if (APPLE)
 find_path(PYTHON_INCLUDE_DIR NAMES Python.h
           HINTS /usr/local/Frameworks/Python.framework/Headers
@@ -75,7 +80,7 @@ set(PYTHON_LIBRARIES ${PYTHON_LIBRARY})
 
 
 ## OpenMP?
-# 
+#  Fine for now, but we are using C++11 threads on CCP4 7.1
 
 find_package(OpenMP)
 if(OPENMP_FOUND)
@@ -96,14 +101,40 @@ include_directories(${CCP4_INCLUDE_DIRS}
                     "${PYTHON_INCLUDE_DIR}")
 
 add_library(sails_lib
+            sails-find.cpp
             sails-lib.cpp)
 
-target_link_libraries ( sails_lib ${CCP4_LIBRARIES} )
+## Add libprivateer
+#   This will change in the future. Will produce a suitable cmake file for it
+
+add_library ( privateer SHARED IMPORTED )
+if (APPLE)
+  set_target_properties ( privateer PROPERTIES
+                          IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libprivateer.dylib" )
+else()
+  set_target_properties ( privateer PROPERTIES
+                          IMPORTED_LOCATION "libprivateer.so" )
+endif()
+
+target_link_libraries ( sails_lib ${CCP4_LIBRARIES} privateer )
 
 add_executable(sails_exec
                sails.cpp)
 
-target_link_libraries ( sails_exec sails_lib ${CCP4_LIBRARIES} )
+add_executable(sails_combine_exec
+               tools/sails-backend_combine.cpp)
+
+add_executable(sails_fingerprint_exec
+               tools/sails-backend_fingerprint.cpp)
+
+add_executable(sails_minimax_exec
+               tools/sails-backend_minimax.cpp)
+
+target_link_libraries ( sails_exec             sails_lib ${CCP4_LIBRARIES} )
+target_link_libraries ( sails_combine_exec     sails_lib ${CCP4_LIBRARIES} )
+target_link_libraries ( sails_fingerprint_exec sails_lib ${CCP4_LIBRARIES} GSL::gsl )
+target_link_libraries ( sails_minimax_exec     sails_lib ${CCP4_LIBRARIES} )
+
 
 set_target_properties ( sails_lib    PROPERTIES OUTPUT_NAME sails )
 set_target_properties ( sails_exec   PROPERTIES OUTPUT_NAME sails )

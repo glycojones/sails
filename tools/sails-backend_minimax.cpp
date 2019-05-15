@@ -11,11 +11,11 @@
 #include <clipper/clipper-minimol.h>
 #include <clipper/clipper-contrib.h>
 #include <clipper/minimol/minimol_utils.h>
-#include "clipper-glyco.h"
+#include <privateer/clipper-glyco.h>
 #include <algorithm>
 #include <stdlib.h>
 
-struct validation_flags 
+struct validation_flags
 {
     bool validate_geometry;
     bool validate_anomer;
@@ -46,7 +46,7 @@ int main( int argc, char** argv )
     clipper::String validation_string = "";
     int uiso = 9999;
     int dump = 0;
- 
+
     // command input
     CCP4CommandInput args( argc, argv, true );
     int arg = 0;
@@ -54,22 +54,22 @@ int main( int argc, char** argv )
     {
         if ( args[arg] == "-title" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 title = args[arg];
         }
         else if ( args[arg] == "-mtzin" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ipmtz = args[arg];
         }
         else if ( args[arg] == "-pdbin" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ippdb = args[arg];
         }
         else if ( args[arg] == "-colin-fc" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ipcol_fc = args[arg];
         }
         else if ( args[arg] == "-validation" )
@@ -79,7 +79,7 @@ int main( int argc, char** argv )
         }
         else if ( args[arg] == "-resolution" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 res_in = clipper::String(args[arg]).f();
         }
         else if ( args[arg] == "-verbose" )
@@ -88,13 +88,13 @@ int main( int argc, char** argv )
         }
         else if ( args[arg] == "-cutoff" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 cutoff = clipper::String(args[arg]).i();
         }
         else if ( args[arg] == "-sugar" )
         {
             if ( ++arg < args.size() )
-            { 
+            {
                 sugar = args[arg];
                 if (!clipper::MSugar::search_database ( sugar.trim().c_str() ) )
                 {
@@ -105,7 +105,7 @@ int main( int argc, char** argv )
         }
         else if ( args[arg] == "-uiso" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 uiso = clipper::String(args[arg]).i();
         }
         else if ( args[arg] == "-dump" )
@@ -136,8 +136,8 @@ int main( int argc, char** argv )
     flags.validate_conformation = false;
     flags.validate_geometry = false;
 
-    process_validation_options ( validation_string, flags ); 
-   
+    process_validation_options ( validation_string, flags );
+
     flags.validate_geometry ? std::cout << "\ngeometry \ton\n" : std::cout << "geometry \toff\n";
     flags.validate_conformation ? std::cout << "conformation \ton\n" : std::cout << "conformation \toff\n";
     flags.validate_anomer ? std::cout << "anomer \t\ton\n" : std::cout << "anomer \t\toff\n";
@@ -153,14 +153,14 @@ int main( int argc, char** argv )
 
     // Get reference model
     clipper::MiniMol mol;
-  
+
     clipper::MMDBManager mmdb;
     const int mmdbflags = mmdb::MMDBF_IgnoreBlankLines | mmdb::MMDBF_IgnoreDuplSeqNum | mmdb::MMDBF_IgnoreNonCoorPDBErrors | mmdb::MMDBF_IgnoreRemarks | mmdb::MMDBF_EnforceUniqueChainID;
     clipper::MMDBfile mfile;
     mfile.SetFlag( mmdbflags );
     mfile.read_file( ippdb );
     mfile.import_minimol( mol );
-    
+
     std::cout << mol.spacegroup().symbol_hm() << " " << mol.cell().format() << " " << mol.atom_list().size() << std::endl;
 
     const clipper::MAtomNonBond nb(mol, 5.0);
@@ -224,8 +224,8 @@ int main( int argc, char** argv )
     clipper::Cell cell( cd );
     clipper::MiniMol mol_tmp[59];
 
-    for (int i =0; i < 59 ; i++) 
-        mol_tmp[i] = clipper::MiniMol( clipper::Spacegroup::p1(), cell ); 
+    for (int i =0; i < 59 ; i++)
+        mol_tmp[i] = clipper::MiniMol( clipper::Spacegroup::p1(), cell );
         // a variable to store the transformed coordinates for each conformer
         // was 41 but now incorporates furanoses and should be 59
 
@@ -240,7 +240,7 @@ int main( int argc, char** argv )
         {
             clipper::MMonomer mm = mol[chn][res];
             int an[3];
-            
+
             if (mm.type() == sugar)
             {
                 clipper::MSugar ms(mol, mm, manb);
@@ -250,26 +250,26 @@ int main( int argc, char** argv )
                 std::cout << " m_anomeric is " << m_anomeric.id() << " " << m_anomeric.id() << std::endl;
                 std::vector<clipper::MAtom> ring_atoms = ms.ring_members();
                 atomvr.clear();
-               
+
                 bool worthy = true;
 
-                if ( flags.validate_anomer && ( ! ms.ok_with_anomer() ) ) 
+                if ( flags.validate_anomer && ( ! ms.ok_with_anomer() ) )
                     worthy = false;
-                
+
                 if ( flags.validate_handedness && ( ! ms.ok_with_chirality() ) )
                     worthy = false;
-                
+
                 if ( flags.validate_conformation && ( ! ms.ok_with_conformation() ) )
                     worthy = false;
-                
-                if ( flags.validate_geometry && ((! ms.ok_with_bonds_rmsd()) || (! ms.ok_with_angles_rmsd() ) ) ) 
+
+                if ( flags.validate_geometry && ((! ms.ok_with_bonds_rmsd()) || (! ms.ok_with_angles_rmsd() ) ) )
                     worthy = false;
- 
+
                 if ( worthy )
                 {
 
                     if ( ring_atoms.size() == 5 ) // furanose sugar
-                    {   
+                    {
                         atomv.clear();
                         atomv.push_back( ring_atoms[1].name().trim() ); // first carbon
                         atomv.push_back( ring_atoms[3].name().trim() ); // third carbon
@@ -293,11 +293,11 @@ int main( int argc, char** argv )
                         atomvt.push_back( ring_atoms[4].name().trim() ); // fourth carbon, need three atoms as well
                     }
 
-                    for ( int i = 0; i < atomv.size(); i++ ) 
+                    for ( int i = 0; i < atomv.size(); i++ )
                         an[i] = mm.lookup( atomv[i], clipper::MM::ANY );
-            
+
                     if ( an[0] >= 0 && an[1] >= 0 && an[2] >= 0 )
-                    { 
+                    {
                         atomr = mm[0].name().trim();
                         atomvr.push_back ( mm[0].name().trim() );
 
@@ -310,12 +310,12 @@ int main( int argc, char** argv )
                         // std::cout << "an[0]=" << an[0] << " an[1]=" << an[1] << " an[2]=" << an[2] << std::endl;
                         // std::cout << "atomr=" << atomr << std::endl;
 
-                        // for ( int j = 0 ; j < atomvt.size() ; j++ ) 
+                        // for ( int j = 0 ; j < atomvt.size() ; j++ )
                         //    std::cout << "atomvt[" << j << "]=" << atomvt[j] << " ";
-                    
+
                         // std::cout << std::endl;
 
-                        // for ( int j = 0 ; j < atomv.size() ; j++ ) 
+                        // for ( int j = 0 ; j < atomv.size() ; j++ )
                         //    std::cout << "atomv[" << j << "]=" << atomv[j] << " ";
 
                         // make rtop
@@ -345,7 +345,7 @@ int main( int argc, char** argv )
 
     std::vector<int> resvt( atomvt.size(), 0 );
     std::vector<int> resvr( atomvr.size(), 0 );
-    
+
     for ( int i = 0; i <  atomvt.size(); i++ )
     {
         if ( atomvt[i].length() > 4 )
@@ -372,7 +372,7 @@ int main( int argc, char** argv )
 
     int nfound = 0;
 
-    for (int i = 0; i < 59 ; i++) 
+    for (int i = 0; i < 59 ; i++)
         if (rtops[i].size() != 0)
         {
             nfound += rtops[i].size();
@@ -449,14 +449,14 @@ int main( int argc, char** argv )
             std::sort( s2.begin(), s2.end() );
             d2cut = s2[ 99*s2.size()/100 ]; // was s2[ (100-int(cutoff))*s2.size()/100 ];
 
-            for ( int c = 0; c < mol_tmp[conf].size(); c++ ) 
-                if ( d2[c] > d2cut ) 
+            for ( int c = 0; c < mol_tmp[conf].size(); c++ )
+                if ( d2[c] > d2cut )
                     flag[conf][c] = false;
 
             int nf = 0;
 
-            for ( int c = 0; c < mol_tmp[conf].size(); c++ ) 
-                if ( flag[conf][c] ) 
+            for ( int c = 0; c < mol_tmp[conf].size(); c++ )
+                if ( flag[conf][c] )
                     nf++;
 
             std::cout << "Accepted " << nf << " with cutoff distance " << d2cut << std::endl;
@@ -520,7 +520,7 @@ int main( int argc, char** argv )
             }
 
 
-            for ( MRI ix = rhomin[i].first(); !ix.last(); ix.next() ) 
+            for ( MRI ix = rhomin[i].first(); !ix.last(); ix.next() )
                 rhoavg[i][ix] *= 1.0/nop;
 
             // get list of peaks
@@ -534,7 +534,7 @@ int main( int argc, char** argv )
                     for ( cg.u() = 1; cg.u() < 2*ng; cg.u()++ )
                     {
                         rho0 = rhomin[i].get_data( cg );
-                                
+
                         if ( rho0 > rhomin[i].get_data( cg - cgu ) &&
                              rho0 > rhomin[i].get_data( cg + cgu ) &&
                              rho0 > rhomin[i].get_data( cg - cgv ) &&
@@ -611,7 +611,7 @@ int main( int argc, char** argv )
                     // now get most representative fragment
                     std::vector<clipper::Coord_orth> cavg( atomvr.size(), clipper::Coord_orth( 0.0, 0.0, 0.0 ) );
                     double navg = 1.0;
-                    
+
                     for ( int c = 0; c < mol_tmp[i].size(); c++ )
                         if ( flag[i][c] )
                         {
@@ -621,8 +621,8 @@ int main( int argc, char** argv )
                                 int r = resvr[irep];
                                 int a;
 
-                                for ( a = 0; a < mol_tmp[i][c][r].size(); a++ ) 
-                                    if ( mol_tmp[i][c][r][a].id().trim() == atomvr[irep].trim() ) 
+                                for ( a = 0; a < mol_tmp[i][c][r].size(); a++ )
+                                    if ( mol_tmp[i][c][r][a].id().trim() == atomvr[irep].trim() )
                                         break;
 
                                 if ( a == mol_tmp[i][c][r].size() )
@@ -636,7 +636,7 @@ int main( int argc, char** argv )
                             }
                         }
 
-                    for ( int index = 0; index < atomvr.size(); index++ ) 
+                    for ( int index = 0; index < atomvr.size(); index++ )
                         cavg[index] = (1.0/navg) * cavg[index];
 
                     double cmin = 0;
@@ -650,7 +650,7 @@ int main( int argc, char** argv )
                             {
                                 int r = resvr[index];
                                 int a;
-                                
+
                                 for ( a = 0; a < mol_tmp[i][c][r].size(); a++ )
                                     if ( mol_tmp[i][c][r][a].id().trim() == atomvr[index].trim() )
                                         break;
@@ -659,7 +659,7 @@ int main( int argc, char** argv )
                                 {
                                     std::cout << "resvr[i]: " << r << " a: " << a << " ChainID: " << mol_tmp[i][c][r].id() << std::endl;
                                 }
-                                
+
                                 d += ( cavg[index] - mol_tmp[i][c][r][a].coord_orth() ).lengthsq();
                             }
 

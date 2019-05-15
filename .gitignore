@@ -33,4 +33,12 @@
 
 CMakeCache.txt
 CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+sails
+sails_combine_exec
+sails_fingerprint_exec
+sails_minimax_exec
+.DS_Store
 

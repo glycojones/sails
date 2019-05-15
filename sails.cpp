@@ -12,7 +12,7 @@
 #include <clipper/clipper-minimol.h>
 #include <stdlib.h>
 
-#include "privateer-lib.h"
+#include "sails-lib.h"
 
 int main( int argc, char** argv )
 {

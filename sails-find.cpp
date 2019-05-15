@@ -1,7 +1,7 @@
 /*! \file ss-find.cpp buccaneer library */
 /* (C) 2011 Kevin Cowtan & University of York all rights reserved */
 
-#include "privateer-ss-find.h"
+#include "sails-find.h"
 
 void SSfind::prep_xmap( const clipper::Xmap<float>& xmap, const double radius )
 {
