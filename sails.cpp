@@ -17,14 +17,8 @@
 int main( int argc, char** argv )
 {
 
-    #ifndef SVN_REV
-        clipper::String program_version = "MKII";
-        CCP4Program prog( "privateer", program_version.c_str(), "$Date: 2015/01/06" );
-    #else
-        clipper::String program_version = "MKII-";
-        program_version.append(SVN_REV);
-        CCP4Program prog( "privateer", program_version.c_str(), "$Date: 2015/03/10" );
-    #endif
+    clipper::String program_version = "MK I";
+    CCP4Program prog( "sails", program_version.c_str(), "$Date: 2019/05/05" );
 
     // defaults
     clipper::String title;
@@ -48,7 +42,7 @@ int main( int argc, char** argv )
     clipper::String building_options = ""; // can be 'all', or { 'nglycans' 'oglycans' 'ligands' }
     privateer::data::build_options options = { false, false, false };
 
-    std::cout << std::endl << "Copyright 2013-2015 Jon Agirre, Kevin Cowtan and The University of York." << std::endl;
+    std::cout << std::endl << "Copyright 2013-2019 Mihaela Atanasova, Kevin Cowtan and Jon Agirre." << std::endl;
 
     // command input
     CCP4CommandInput args( argc, argv, true );
@@ -181,13 +175,13 @@ int main( int argc, char** argv )
         std::cout << "no\n";
 
     std::cout << "O-linked glycans: ";
-    if ( options.nglycans )
+    if ( options.oglycans )
         std::cout << "yes\n";
     else
         std::cout << "no\n";
 
     std::cout << "N-linked glycans: ";
-    if ( options.nglycans )
+    if ( options.ligands )
         std::cout << "yes\n" << std::endl;
     else
         std::cout << "no\n" << std::endl;
