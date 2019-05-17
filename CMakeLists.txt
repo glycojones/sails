@@ -22,7 +22,7 @@ if(APPLE)
     find_program(PYTHON NAMES $ENV{PYTHON} python3.7 ccp4-python
                         HINTS /usr/local/bin /usr/bin ${CMAKE_INSTALL_PREFIX}/bin )
 else()
-    find_program(PYTHON NAMES $ENV{PYTHON} ccp4-python python3.7 python3.6 python.exe
+    find_program(PYTHON NAMES $ENV{PYTHON} python3.7 python3.6 ccp4-python python.exe
                         HINTS ${CMAKE_INSTALL_PREFIX}/bin
                         PATHS [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
 endif()
@@ -45,7 +45,7 @@ if (APPLE)
                HINTS /usr/local/lib ${_PY_PREFIX}/lib
                NO_DEFAULT_PATH)
 else()
-  find_library(PYTHON_LIBRARY NAMES python3.7
+  find_library(PYTHON_LIBRARY NAMES python3.7 python3.6m python
                HINTS ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/lib ${_PY_PREFIX}/libs
                NO_DEFAULT_PATH)
 endif()
@@ -66,7 +66,7 @@ find_path(PYTHON_INCLUDE_DIR NAMES Python.h
           NO_DEFAULT_PATH)
 else()
   find_path(PYTHON_INCLUDE_DIR NAMES Python.h
-            HINTS ${_PY_PREFIX}/include/python
+            HINTS ${_PY_PREFIX}/include/python3.6m
             NO_DEFAULT_PATH)
 endif()
 
@@ -108,12 +108,13 @@ add_library(sails_lib
 #   This will change in the future. Will produce a suitable cmake file for it
 
 add_library ( privateer SHARED IMPORTED )
+
 if (APPLE)
   set_target_properties ( privateer PROPERTIES
                           IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libprivateer.dylib" )
 else()
   set_target_properties ( privateer PROPERTIES
-                          IMPORTED_LOCATION "libprivateer.so" )
+                          IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libprivateer.so" )
 endif()
 
 target_link_libraries ( sails_lib ${CCP4_LIBRARIES} privateer )
