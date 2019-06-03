@@ -3,6 +3,10 @@ project(sails C CXX)
 
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
+if (DEVKIT)
+  message(STATUS "Building with local devkit options")
+endif()
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -55,6 +59,8 @@ if (NOT PYTHON_LIBRARY)
 endif()
 
 message(STATUS "Python library: ${PYTHON_LIBRARY}")
+set ( PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/py3 )
+message(STATUS "Python module path: ${PYTHON_MODULE_PATH}")
 
 # Rely on Homebrew Python 3.7 until CCP4 bundle it in
 # TODO: update upon release
@@ -139,26 +145,22 @@ target_link_libraries ( sails_minimax_exec     sails_lib ${CCP4_LIBRARIES} )
 
 set_target_properties ( sails_lib    PROPERTIES OUTPUT_NAME sails )
 set_target_properties ( sails_exec   PROPERTIES OUTPUT_NAME sails )
-set_target_properties ( sails_module PROPERTIES OUTPUT_NAME sails )
+set_target_properties ( sails_module PROPERTIES OUTPUT_NAME sails_core )
 
 target_link_libraries ( sails_module PRIVATE sails_lib ${CCP4_LIBRARIES} ${pybind11_LIBRARIES} )
 
-set ( PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/py2 )
 
-message(STATUS "Python module path: ${PYTHON_MODULE_PATH}")
-
+file (COPY "python/sails" DESTINATION ${PYTHON_MODULE_PATH})
 
 install(FILES sails-lib.h
         DESTINATION include/sails)
 install(TARGETS sails_lib
         LIBRARY DESTINATION "${LIB_INSTALL_DIR}")
 install ( TARGETS sails_exec DESTINATION bin)
-install ( TARGETS sails_module DESTINATION ${PYTHON_MODULE_PATH} )
+install ( TARGETS sails_module DESTINATION ${PYTHON_MODULE_PATH}/sails )
 
-
-if (UNIX)
-  install(CODE "
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink sails
-    \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/sails\")
-        ")
+if (DEVKIT)
+  install ( TARGETS sails_combine_exec     DESTINATION bin )
+  install ( TARGETS sails_fingerprint_exec DESTINATION bin )
+  install ( TARGETS sails_minimax_exec     DESTINATION bin )
 endif()
