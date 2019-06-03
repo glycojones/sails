@@ -6,6 +6,7 @@
 //
 
 #include <string.h>
+#include <sails-lib.h>
 #include <clipper/clipper.h>
 #include <clipper/clipper-ccp4.h>
 #include <clipper/clipper-minimol.h>
@@ -15,15 +16,6 @@
 #include <algorithm>
 #include <stdlib.h>
 
-struct validation_flags
-{
-    bool validate_geometry;
-    bool validate_anomer;
-    bool validate_conformation;
-    bool validate_handedness;
-};
-
-void process_validation_options ( clipper::String, validation_flags& );
 
 int main( int argc, char** argv )
 {
@@ -130,13 +122,13 @@ int main( int argc, char** argv )
         exit(1);
     }
 
-    validation_flags flags;
+    sails::data::validation_flags flags;
     flags.validate_anomer = false;
     flags.validate_handedness = false;
     flags.validate_conformation = false;
     flags.validate_geometry = false;
 
-    process_validation_options ( validation_string, flags );
+    sails::process_validation_options ( validation_string, flags );
 
     flags.validate_geometry ? std::cout << "\ngeometry \ton\n" : std::cout << "geometry \toff\n";
     flags.validate_conformation ? std::cout << "conformation \ton\n" : std::cout << "conformation \toff\n";
@@ -699,46 +691,4 @@ int main( int argc, char** argv )
 
     prog.set_termination_message( "Normal termination" );
     system("touch fingerprinted");
-}
-
-void process_validation_options ( clipper::String validation_string, validation_flags &flags )
-{
-    std::vector < clipper::String > buffer = validation_string.split( "," );
-
-    for ( int i = 0; i < buffer.size(); i++ )
-    {
-        if ( buffer[i].trim() == "all" )
-        {
-            flags.validate_anomer = true;
-            flags.validate_handedness = true;
-            flags.validate_conformation = true;
-            flags.validate_geometry = true;
-            return;
-        }
-        else if ( buffer[i].trim() == "none" )
-        {
-            flags.validate_anomer = false;
-            flags.validate_handedness = false;
-            flags.validate_conformation = false;
-            flags.validate_geometry = false;
-            return;
-        }
-        else if ( buffer[i].trim() == "anomer" )
-        {
-            flags.validate_anomer = true;
-        }
-        else if ( buffer[i].trim() == "geometry" )
-        {
-            flags.validate_geometry = true;
-        }
-        else if ( buffer[i].trim() == "handedness" )
-        {
-            flags.validate_handedness = true;
-        }
-        else if ( buffer[i].trim() == "conformation" )
-        {
-            flags.validate_conformation = true;
-        }
-    }
-    return;
 }

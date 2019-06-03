@@ -1,4 +1,4 @@
-/*! \file privateer-lib.h
+/*! \file sails-lib.h
   A collection of tools that help the Privateer do his job */
 // version  MKII
 // 2013 Jon Agirre & Kevin Cowtan, The University of York
@@ -43,8 +43,8 @@
 //L  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //L  MA 02111-1307 USA
 
-#ifndef PRIVATEER_LIB_H_INCLUDED
-#define PRIVATEER_LIB_H_INCLUDED
+#ifndef SAILS_LIB_H_INCLUDED
+#define SAILS_LIB_H_INCLUDED
 
 #include <fstream>
 #include <algorithm>
@@ -54,10 +54,10 @@
 #include "sails-find.h"
 
 
-namespace privateer
+namespace sails
 {
 
-    // Data for Privateer
+    // Data for Sails
     namespace data
     {
         struct dummy_atom
@@ -88,6 +88,14 @@ namespace privateer
             bool ligands;
         };
 
+        struct validation_flags
+        {
+            bool validate_geometry;
+            bool validate_anomer;
+            bool validate_conformation;
+            bool validate_handedness;
+        };
+
         extern const fingerprint fingerprint_list[];
         extern const int fingerprint_list_size;
     } // namespace data
@@ -106,16 +114,17 @@ namespace privateer
     void insert_coot_go_to_sugar_python ( std::fstream&, const clipper::Coord_orth& sugar_centre, const clipper::String& diagnostic );
     void insert_coot_statusbar_text_python ( std::fstream&, clipper::String& );
 
-    // General Privateer functions
+    // General Sails functions
     clipper::ftype real_space_correlation ( const clipper::Xmap<float>&, const clipper::Xmap<float>& );
 
-    clipper::MMonomer get_ideal_monomer ( const privateer::data::fingerprint& fp );
-    clipper::MMonomer get_peak_monomer  ( const privateer::data::fingerprint& fp );
-    clipper::MMonomer get_void_monomer  ( const privateer::data::fingerprint& fp );
+    clipper::MMonomer get_ideal_monomer ( const sails::data::fingerprint& fp );
+    clipper::MMonomer get_peak_monomer  ( const sails::data::fingerprint& fp );
+    clipper::MMonomer get_void_monomer  ( const sails::data::fingerprint& fp );
 
-		void process_building_options ( clipper::String building_options, privateer::data::build_options &flags );
-    clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, privateer::data::build_options& options, double step, int nhit );
+    void process_validation_options ( clipper::String validation_string, sails::data::validation_flags &flags );
+		void process_building_options ( clipper::String building_options, sails::data::build_options &flags );
+    clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
 
-} // namespace privateer
+} // namespace sails
 
 #endif

@@ -58,37 +58,37 @@ int main( int argc, char** argv )
     {
         if ( args[arg] == "-title" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 title = args[arg];
         }
         else if ( args[arg] == "-mapin1" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ipmaxmap = args[arg];
         }
         else if ( args[arg] == "-mapin2" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ipminmap = args[arg];
         }
         else if ( args[arg] == "-pdbin" )
         {
-        if ( ++arg < args.size() ) 
+        if ( ++arg < args.size() )
             ippdb = args[arg];
         }
         else if ( args[arg] == "-maskradius" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ipradius = clipper::String(args[arg]).f();
         }
         else if ( args[arg] == "-mapradius" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 ipmapradius = clipper::String(args[arg]).f();
         }
         else if ( args[arg] == "-pdbout" )
         {
-            if ( ++arg < args.size() ) 
+            if ( ++arg < args.size() )
                 oppdb = args[arg];
         }
         else if ( args[arg] == "-dump" )
@@ -197,7 +197,7 @@ int main( int argc, char** argv )
 
     for ( MRI ix = max_map.first(); !ix.last(); ix.next() )
     {
-        if (mask[ix] == 1.0) 
+        if (mask[ix] == 1.0)
             max_map[ix] = ((max_map[ix] - mean) / std_dev); // normalise values inside the mask
     }
 
@@ -277,7 +277,7 @@ int main( int argc, char** argv )
             covariances[i] = 0.0;
             number_of_occurrences[i]=0;
         }
-                
+
         exp_fit_data.n = 43;
         exp_fit_data.distance = distances;
         exp_fit_data.density_diff = covariances;
@@ -316,7 +316,7 @@ int main( int argc, char** argv )
                         covariances[bin_index] += 1-( pow(max_map[ix] - max_map[iy], 2) /2.0);
                         number_of_occurrences[bin_index]++;
 
-                        if (bin_index > max_index) 
+                        if (bin_index > max_index)
                             max_index = bin_index;
 
                     }
@@ -334,7 +334,7 @@ int main( int argc, char** argv )
     {
         // set the exact number of data points and extract the means
         exp_fit_data.n = max_index;
-        
+
         for (int i = 0 ; i <= max_index ; i++)
         {
             covariances[i] /= number_of_occurrences[i];
@@ -363,13 +363,13 @@ int main( int argc, char** argv )
                     n_data++;
                 }
             }
-            
-            if (n_data > 0) 
+
+            if (n_data > 0)
                 means << i/6.0 << "\t" << means_bin/n_data << std::endl;
         }
-        
+
         means.close();
-    } 
+    }
 
     // do the mapcrawling thing here
 
@@ -398,8 +398,8 @@ int main( int argc, char** argv )
     float mean_minmap, stdev_minmap;
     mean_minmap = stdev_minmap = 0.0;
 
-    std::cout << "\t{" << std::endl << "\t\t\"SUG\", \"nglycan\" , \"B\", \"D\", \"complete name\", " << mol[0][0].size() << "\n\t\t{" << std::endl; 
-    
+    std::cout << "\t{" << std::endl << "\t\t\"SUG\", \"nglycan\" , \"B\", \"D\", \"complete name\", " << mol[0][0].size() << "\n\t\t{" << std::endl;
+
     for ( int natm = 1 ; natm <= mol[0][0].size() ; natm++) // mean calculation at the atom positions
     {
         mean_minmap += min_map.interp<clipper::Interp_cubic>(min_map.coord_map(mol[0][0][natm-1].coord_orth()));
@@ -453,19 +453,19 @@ int main( int argc, char** argv )
             coord_out.precision(3);
             coord_out << mol[0][0][natm-1].coord_orth().z() << "  1.00 30.00       PEAKS" << std::endl;
 
-            // std::cout << "Peak set at " << mol[0][0][natm-1].coord_orth().format() << " with density " 
-            //          << min_map.interp<clipper::Interp_cubic>(min_map.coord_map(mol[0][0][natm-1].coord_orth())) 
+            // std::cout << "Peak set at " << mol[0][0][natm-1].coord_orth().format() << " with density "
+            //          << min_map.interp<clipper::Interp_cubic>(min_map.coord_map(mol[0][0][natm-1].coord_orth()))
             //          << ", assigning number " << natm << std::endl;
-            
+
             std::cout << "{ \"PK1\", " << mol[0][0][natm-1].coord_orth().x() << " "
-                      << mol[0][0][natm-1].coord_orth().y() << " " 
+                      << mol[0][0][natm-1].coord_orth().y() << " "
                       << mol[0][0][natm-1].coord_orth().z() << " }" << std::endl;
 
             npeaks++;
         }
         else {}
-            // std::cout << "Peak rejected at " << mol[0][0][natm-1].coord_orth().format() 
-            //          << " with density " << min_map.interp<clipper::Interp_cubic>(min_map.coord_map(mol[0][0][natm-1].coord_orth())) 
+            // std::cout << "Peak rejected at " << mol[0][0][natm-1].coord_orth().format()
+            //          << " with density " << min_map.interp<clipper::Interp_cubic>(min_map.coord_map(mol[0][0][natm-1].coord_orth()))
             //          << ". Mean: " << mean_minmap << " Stdev: " << stdev_minmap << std::endl;
 
     }
@@ -480,7 +480,7 @@ int main( int argc, char** argv )
         {                                                    // to prevent picking artificial peaks
             max_map[ix] *= -1;
         }
-        
+
         max_map[ix] += pow(clipper::Coord_orth::length(ix.coord_orth(), clipper::Coord_orth( 0.0, 0.0, 0.0 )) / ipmapradius, 6) ;
     }
 
@@ -504,7 +504,7 @@ int main( int argc, char** argv )
                 }
             }
         }
-         
+
         // std::cout << std::endl << minimum_density << "\t" << minimum_density + exp(-0/r0) << std::endl;
 
         for ( MRI ix = max_map.first(); !ix.last(); ix.next() )  // run across the map
@@ -521,7 +521,7 @@ int main( int argc, char** argv )
 
         total_atom_count++;
 
-        //std::cout << "Void found at " << minimum_spot.format() << " with density " 
+        //std::cout << "Void found at " << minimum_spot.format() << " with density "
         //          << minimum_density << ", assigning number " << natm << std::endl;
 
         coord_out.flags(original_flags);
@@ -562,7 +562,7 @@ int main( int argc, char** argv )
 
 
         std::cout << "{ \"VD1\", " << minimum_spot.x() << " "
-                  << minimum_spot.y() << " " 
+                  << minimum_spot.y() << " "
                   << minimum_spot.z() << " }" << std::endl;
 
     }
@@ -608,9 +608,9 @@ int main( int argc, char** argv )
         coord_out.width(8);
         coord_out.precision(3);
         coord_out << mol[0][0][natm-1].coord_orth().z() << "  1.00 30.00       MODEL" << std::endl;
-    
+
         std::cout << "{ \"ATM\", " << mol[0][0][natm-1].coord_orth().x() << " "
-                  << mol[0][0][natm-1].coord_orth().y() << " " 
+                  << mol[0][0][natm-1].coord_orth().y() << " "
                   << mol[0][0][natm-1].coord_orth().z() << " }" << std::endl;
 
     }
@@ -702,8 +702,8 @@ double expofit (size_t n_obs, size_t n_params, data& input_data )
 
     print_state (iter, solver);
 
-    do 
-    {        
+    do
+    {
         iter++;
         status = gsl_multifit_fdfsolver_iterate (solver);
 
@@ -733,9 +733,10 @@ double expofit (size_t n_obs, size_t n_params, data& input_data )
 
 void print_state (size_t iter, gsl_multifit_fdfsolver * s)
 {
+    int iteration_number = (int)iter;
     printf ("iteration: %3u r0 = % 15.8f "
             "|f(x)| = %g\n",
-            iter,
+            iteration_number,
             gsl_vector_get (s->x, 0),
             gsl_blas_dnrm2 (s->f)
            );
@@ -745,7 +746,7 @@ float bin_distance(float distance)
 {
     int numerator;
 
-    if (distance < 0.3) 
+    if (distance < 0.3)
         return 0.0;
 
     for ( numerator = 1; distance >= (numerator+2)/6.0; numerator += 2 );

@@ -40,7 +40,7 @@ int main( int argc, char** argv )
     clipper::CCP4MAPfile mapFile;
     clipper::Xmap<float> xwrk;
     clipper::String building_options = ""; // can be 'all', or { 'nglycans' 'oglycans' 'ligands' }
-    privateer::data::build_options options = { false, false, false };
+    sails::data::build_options options = { false, false, false };
 
     std::cout << std::endl << "Copyright 2013-2019 Mihaela Atanasova, Kevin Cowtan and Jon Agirre." << std::endl;
 
@@ -146,7 +146,7 @@ int main( int argc, char** argv )
 
     if (( args.size() <= 1 ) || ( !useMap && (( ipmtz == "NONE" ) || ( ipcol_fo == "NONE" ) || (ipcol_hl == "NONE"))) ) // print help and exit
     {
-        std::cout << "Usage: privateer\n\n"
+        std::cout << "Usage: sails\n\n"
                   << "\t-mtzin <filename>\t\tCOMPULSORY\n"
                   << "\t-colin-fo <colpath>\t\tspecify F,SIGF\n"
                   << "\t-colin-hl <colpath>\t\tphase probabilities (ABCD)\n"
@@ -165,7 +165,7 @@ int main( int argc, char** argv )
         return(1);
     }
 
-    privateer::process_building_options ( building_options, options );
+    sails::process_building_options ( building_options, options );
 
     std::cout << "Detecting:\n"
               << "N-linked glycans: ";
@@ -259,7 +259,7 @@ int main( int argc, char** argv )
         std::cout << tmpmol.spacegroup().symbol_hm() << " " << tmpmol.cell().format() << " " << tmpmol.atom_list().size() << std::endl;
     }
 
-		clipper::MiniMol mol_new = privateer::build_sugars (xwrk, options, step, nhit);
+		clipper::MiniMol mol_new = sails::build_sugars (xwrk, options, step, nhit);
 
     clipper::MMDBfile pdbfile;
     pdbfile.export_minimol( mol_new );

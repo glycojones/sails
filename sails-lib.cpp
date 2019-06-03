@@ -1,4 +1,4 @@
-/* \file privateer-lib.cpp
+/* \file sails-lib.cpp
     A set of utilities that helps the Privateer do his job */
 // version  0.1.0
 // 2013 Jon Agirre & Kevin Cowtan, The University of York
@@ -47,11 +47,11 @@
 
 #include "sails-lib.h"
 
-void privateer::insert_coot_prologue_scheme ( std::fstream& output )
+void sails::insert_coot_prologue_scheme ( std::fstream& output )
 {
-    output  << "; This script has been created by Privateer-validate (Agirre and Cowtan, 2013-15)\n"
+    output  << "; This script has been created by Sails (Atanasova, Cowtan and Agirre, 2013-19)\n"
             << "(set-graphics-window-size 1873 968)\n"
-        << "(set-graphics-window-position 0 0)\n"
+            << "(set-graphics-window-position 0 0)\n"
             << "(set-go-to-atom-window-position 0 19)\n"
             << "(set-display-control-dialog-position 366 20)\n"
             << "(vt-surface 2)\n"
@@ -82,14 +82,14 @@ void privateer::insert_coot_prologue_scheme ( std::fstream& output )
             << "(set-run-state-file-status 0)\n";
 }
 
-void privateer::insert_coot_files_loadup_scheme ( std::fstream& output, const clipper::String& pdb, const clipper::String& mapbest, const clipper::String& mapdiff, const clipper::String& mapomit, bool mode )
+void sails::insert_coot_files_loadup_scheme ( std::fstream& output, const clipper::String& pdb, const clipper::String& mapbest, const clipper::String& mapdiff, const clipper::String& mapomit, bool mode )
 {
     if (!mode) output << "(handle-read-draw-molecule \"" << pdb << "\")\n";
 
     if ( mapbest == "" ) // no map output
     {
         output << "(set-last-map-colour 1.00  0.13  0.89)\n"
-           << "(interesting-things-gui \"Validation report from Privateer\"\n\t(list\n\t\t";
+           << "(interesting-things-gui \"Report from Sails\"\n\t(list\n\t\t";
     }
     else
     {
@@ -97,18 +97,18 @@ void privateer::insert_coot_files_loadup_scheme ( std::fstream& output, const cl
             output << "(handle-read-ccp4-map \"" << mapbest << "\" 0)\n" << "(handle-read-ccp4-map \"" << mapomit << "\" 1)\n";
 
         output << "(set-last-map-colour 1.00  0.13  0.89)\n"
-           << "(interesting-things-gui \"Validation report from Privateer\"\n\t(list\n\t\t";
+           << "(interesting-things-gui \"Report from Sails\"\n\t(list\n\t\t";
     }
 }
 
-void privateer::insert_coot_files_loadup_python ( std::fstream& output, const clipper::String& pdb, const clipper::String& mapbest, const clipper::String& mapdiff, const clipper::String& mapomit, bool mode )
+void sails::insert_coot_files_loadup_python ( std::fstream& output, const clipper::String& pdb, const clipper::String& mapbest, const clipper::String& mapdiff, const clipper::String& mapomit, bool mode )
 {
     if (!mode) output  << "handle_read_draw_molecule (\"" << pdb << "\")\n";
 
         if ( mapbest == "" ) // no map output
     {
         output << "set_last_map_colour  (1.00,  0.13,  0.89)\n"
-               << "interesting_things_gui (\"Validation report from Privateer\",[\n";
+               << "interesting_things_gui (\"Report from Sails\",[\n";
     }
     else
     {
@@ -116,11 +116,11 @@ void privateer::insert_coot_files_loadup_python ( std::fstream& output, const cl
                 output << "handle_read_ccp4_map (\"" << mapbest << "\", 0)\n" << "handle_read_ccp4_map (\"" << mapomit << "\", 1)\n";
 
             output << "set_last_map_colour  (1.00,  0.13,  0.89)\n"
-           << "interesting_things_gui (\"Validation report from Privateer\",[\n";
+           << "interesting_things_gui (\"Report from Sails\",[\n";
     }
 }
 
-void privateer::insert_coot_epilogue_scheme ( std::fstream& output )
+void sails::insert_coot_epilogue_scheme ( std::fstream& output )
 {
     output  << "\n\n))\n(set-scroll-wheel-map 3)\n"
             << "(set-matrix 60.00)\n"
@@ -128,10 +128,10 @@ void privateer::insert_coot_epilogue_scheme ( std::fstream& output )
             << "(set-show-symmetry-master 0)\n";
 }
 
-void privateer::insert_coot_prologue_python ( std::fstream& output )
+void sails::insert_coot_prologue_python ( std::fstream& output )
 {
 
-    output  << "# This script has been created by Privateer-validate (Agirre and Cowtan, 2013-15)\n"
+    output  << "# This script has been created by Sails\n"
             << "set_graphics_window_size (1873, 968)\n"
         << "set_graphics_window_position (0, 0)\n"
         << "set_go_to_atom_window_position (0, 19)\n"
@@ -164,7 +164,7 @@ void privateer::insert_coot_prologue_python ( std::fstream& output )
             << "toggle_idle_spin_function\n";
 }
 
-void privateer::insert_coot_epilogue_python ( std::fstream& output )
+void sails::insert_coot_epilogue_python ( std::fstream& output )
 {
     output  << "\n\n])\nset_scroll_wheel_map (3)\n"
             << "set_matrix (60.00)\n"
@@ -172,32 +172,32 @@ void privateer::insert_coot_epilogue_python ( std::fstream& output )
             << "set_show_symmetry_master (0)\n";
 }
 
-void privateer::insert_coot_go_to_sugar_scheme ( std::fstream& output, const clipper::Coord_orth& sugar_centre, const clipper::String& diagnostic )
+void sails::insert_coot_go_to_sugar_scheme ( std::fstream& output, const clipper::Coord_orth& sugar_centre, const clipper::String& diagnostic )
 {
     output  << "\t(list\t\"" << diagnostic << "\"\t" << sugar_centre.x() << "\t" << sugar_centre.y() << "\t" << sugar_centre.z() << ")\n";
 }
 
-void privateer::insert_coot_go_to_sugar_python ( std::fstream& output, const clipper::Coord_orth& sugar_centre, const clipper::String& diagnostic )
+void sails::insert_coot_go_to_sugar_python ( std::fstream& output, const clipper::Coord_orth& sugar_centre, const clipper::String& diagnostic )
 {
     output  << "\t[\"" << diagnostic << "\",\t" << sugar_centre.x() << ",\t" << sugar_centre.y() << ",\t" << sugar_centre.z() << "],\n";
 }
 
-void privateer::insert_coot_statusbar_text_scheme ( std::fstream& output, clipper::String& text)
+void sails::insert_coot_statusbar_text_scheme ( std::fstream& output, clipper::String& text)
 {
     output  << "(add-status-bar-text \"" << text << "\")" ;
 }
 
-void privateer::insert_coot_statusbar_text_python ( std::fstream& output, clipper::String& text )
+void sails::insert_coot_statusbar_text_python ( std::fstream& output, clipper::String& text )
 {
     output  << "add_status_bar_text (\"" << text << "\")" ;
 }
 
-clipper::ftype privateer::real_space_correlation ( const clipper::Xmap<float>& map1, const clipper::Xmap<float>& map2 )
+clipper::ftype sails::real_space_correlation ( const clipper::Xmap<float>& map1, const clipper::Xmap<float>& map2 )
 {
     return 0.0;
 }
 
-clipper::MMonomer privateer::get_ideal_monomer ( const privateer::data::fingerprint& fp )
+clipper::MMonomer sails::get_ideal_monomer ( const sails::data::fingerprint& fp )
 {
     clipper::MMonomer tmp_mon;
     tmp_mon.set_type ( fp.name_short );
@@ -218,7 +218,7 @@ clipper::MMonomer privateer::get_ideal_monomer ( const privateer::data::fingerpr
     return tmp_mon;
 }
 
-clipper::MMonomer privateer::get_peak_monomer ( const privateer::data::fingerprint& fp )
+clipper::MMonomer sails::get_peak_monomer ( const sails::data::fingerprint& fp )
 {
     clipper::MMonomer tmp_mon;
     tmp_mon.set_type ( fp.name_short );
@@ -239,7 +239,7 @@ clipper::MMonomer privateer::get_peak_monomer ( const privateer::data::fingerpri
     return tmp_mon;
 }
 
-clipper::MMonomer privateer::get_void_monomer ( const privateer::data::fingerprint& fp )
+clipper::MMonomer sails::get_void_monomer ( const sails::data::fingerprint& fp )
 {
     clipper::MMonomer tmp_mon;
     tmp_mon.set_type ( fp.name_short );
@@ -260,7 +260,7 @@ clipper::MMonomer privateer::get_void_monomer ( const privateer::data::fingerpri
     return tmp_mon;
 }
 
-void privateer::process_building_options ( clipper::String building_options, privateer::data::build_options &flags )
+void sails::process_building_options ( clipper::String building_options, sails::data::build_options &flags )
 {
     std::vector < clipper::String > buffer = building_options.split( "," );
 
@@ -289,7 +289,50 @@ void privateer::process_building_options ( clipper::String building_options, pri
     return;
 }
 
-clipper::MiniMol privateer::build_sugars ( clipper::Xmap<float>& xwrk, privateer::data::build_options& options, double step, int nhit )
+void sails::process_validation_options ( clipper::String validation_string, sails::data::validation_flags &flags )
+{
+    std::vector < clipper::String > buffer = validation_string.split( "," );
+
+    for ( int i = 0; i < buffer.size(); i++ )
+    {
+        if ( buffer[i].trim() == "all" )
+        {
+            flags.validate_anomer = true;
+            flags.validate_handedness = true;
+            flags.validate_conformation = true;
+            flags.validate_geometry = true;
+            return;
+        }
+        else if ( buffer[i].trim() == "none" )
+        {
+            flags.validate_anomer = false;
+            flags.validate_handedness = false;
+            flags.validate_conformation = false;
+            flags.validate_geometry = false;
+            return;
+        }
+        else if ( buffer[i].trim() == "anomer" )
+        {
+            flags.validate_anomer = true;
+        }
+        else if ( buffer[i].trim() == "geometry" )
+        {
+            flags.validate_geometry = true;
+        }
+        else if ( buffer[i].trim() == "handedness" )
+        {
+            flags.validate_handedness = true;
+        }
+        else if ( buffer[i].trim() == "conformation" )
+        {
+            flags.validate_conformation = true;
+        }
+    }
+    return;
+}
+
+
+clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit )
 {
     double rad, sigcut;
     clipper::MPolymer mprep;
@@ -304,9 +347,9 @@ clipper::MiniMol privateer::build_sugars ( clipper::Xmap<float>& xwrk, privateer
     clipper::MAtom peak_atom, void_atom;
     clipper::MMonomer peaks, voids, ideal;
 
-    ideal = privateer::get_ideal_monomer ( privateer::data::fingerprint_list[0] );
-    peaks = privateer::get_peak_monomer  ( privateer::data::fingerprint_list[0] );
-    voids = privateer::get_void_monomer  ( privateer::data::fingerprint_list[0] );
+    ideal = sails::get_ideal_monomer ( sails::data::fingerprint_list[0] );
+    peaks = sails::get_peak_monomer  ( sails::data::fingerprint_list[0] );
+    voids = sails::get_void_monomer  ( sails::data::fingerprint_list[0] );
 
     mprep.insert ( ideal, -1 );
 
@@ -414,7 +457,7 @@ clipper::MiniMol privateer::build_sugars ( clipper::Xmap<float>& xwrk, privateer
     return mol_new;
 }
 
-const privateer::data::fingerprint privateer::data::fingerprint_list[] =
+const sails::data::fingerprint sails::data::fingerprint_list[] =
 {
     {
         "ARA", "ligand", "A", "L", "alpha-L-Arabinose", 10,
