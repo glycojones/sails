@@ -68,6 +68,7 @@ message(STATUS "Python module path: ${PYTHON_MODULE_PATH}")
 if (APPLE)
 find_path(PYTHON_INCLUDE_DIR NAMES Python.h
           HINTS /usr/local/Frameworks/Python.framework/Headers
+		/usr/local/Frameworks/Python.framework/Versions/3.7/Headers
                 ${_PY_PREFIX}/include/python
           NO_DEFAULT_PATH)
 else()

@@ -116,9 +116,9 @@ int main( int argc, char** argv )
 
     if ( args.size() <= 1 )
     {
-        std::cout << "\nUsage: minimax\n\t-mtzin <filename>\t\tCOMPULSORY\n\t-pdbin <filename>\t\tCOMPULSORY\n\t";
+        std::cout << "\nUsage: minimax\n\t-pdbin <filename> COMPULSORY\n\t-mtzin <filename> Fc map will be calculated if no map coeffs are supplied.\n\t";
         std::cout << "-validation all,none,anomer,geometry,handedness,conformation\n\t-colin-fc <colpath>\n\t";
-        std::cout << "-resolution <resolution/A>\n\t-sugar <3-Letter code>\n\t-cutoff <percentage>\n\t-uiso <int>" << std::endl << std::endl;
+        std::cout << "-resolution <resolution/A>\n\t-sugar <3-Letter code>\n\t-cutoff <percentage>\n\t-uiso <int> optional smoothing\n" << std::endl << std::endl;
         exit(1);
     }
 
