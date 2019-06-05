@@ -1,103 +1,99 @@
+## Project settings
+#
 cmake_minimum_required(VERSION 3.1)
 project(sails C CXX)
-
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(NOT DEFINED LIB_INSTALL_DIR)
+    set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+endif()
 
 if (DEVKIT)
   message(STATUS "Building with local devkit options")
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-if(NOT DEFINED LIB_INSTALL_DIR)
-    set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib)
-endif()
-
+## Required CCP4 CCP4_LIBRARIES plus GSL
+#
 find_package(CCP4 REQUIRED mmdb2 ccp4c clipper-core clipper-mmdb clipper-minimol
 clipper-contrib clipper-ccp4 clipper-cif )
 
 find_package(GSL REQUIRED)
 
-## Find Python stuff
+## Required Python stuff - link against system Python3 for testing on YSBL machines
 #
-
-if(APPLE)
-    find_program(PYTHON NAMES $ENV{PYTHON} python3.7 ccp4-python
-                        HINTS /usr/local/bin /usr/bin ${CMAKE_INSTALL_PREFIX}/bin )
+if (DEVKIT)
+    if(APPLE)
+        find_program(PYTHON NAMES $ENV{PYTHON} python3.7
+                            HINTS ${CMAKE_INSTALL_PREFIX}/bin)
+    else()
+        find_program(PYTHON NAMES $ENV{PYTHON} python3.6m python3.6 python3
+                            HINTS ${CMAKE_INSTALL_PREFIX}/bin
+                            HINTS /usr/local/bin
+                            HINTS /usr/bin )
+    endif()
 else()
-    find_program(PYTHON NAMES $ENV{PYTHON} python3.7 python3.6 ccp4-python python.exe
-                        HINTS ${CMAKE_INSTALL_PREFIX}/bin
-                        PATHS [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
+    # Link against CCP4-distributed Python
+    if(APPLE)
+        find_program(PYTHON NAMES $ENV{PYTHON} ccp4-python
+                            HINTS ${CMAKE_INSTALL_PREFIX}/bin )
+    else()
+        find_program(PYTHON NAMES $ENV{PYTHON} ccp4-python python.exe
+                            HINTS ${CMAKE_INSTALL_PREFIX}/bin
+                            PATHS [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath])
+    endif()
 endif()
 
-
+## Configure Python
+#
 execute_process(COMMAND ${PYTHON} -c "import sys; sys.stdout.write(sys.prefix)"
                 OUTPUT_VARIABLE _PY_PREFIX
                 RESULT_VARIABLE failure)
-
 if (failure)
     message(FATAL_ERROR "Failed to run ${PYTHON}: ${failure}")
 else()
     message(STATUS "Python interpreter: ${PYTHON}")
+    message(STATUS "Python sys.prefix: ${_PY_PREFIX}")
 endif()
-
-message(STATUS "Python sys.prefix: ${_PY_PREFIX}")
-
-if (APPLE)
-  find_library(PYTHON_LIBRARY NAMES python3.7 python
-               HINTS /usr/local/lib ${_PY_PREFIX}/lib
-               NO_DEFAULT_PATH)
-else()
-  find_library(PYTHON_LIBRARY NAMES python3.7 python3.6m python
-               HINTS ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/lib ${_PY_PREFIX}/libs
-               NO_DEFAULT_PATH)
-endif()
-
+# Get Python libraries
+find_library(PYTHON_LIBRARY NAMES python3.7 python3.6m python
+             HINTS ${_PY_PREFIX}/lib ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/libs
+             NO_DEFAULT_PATH)
 if (NOT PYTHON_LIBRARY)
     message(FATAL_ERROR "Python library not found.")
+else ()
+    message(STATUS "Python library: ${PYTHON_LIBRARY}")
+    set(PYTHON_LIBRARIES ${PYTHON_LIBRARY})
 endif()
-
-message(STATUS "Python library: ${PYTHON_LIBRARY}")
-set ( PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/py3 )
-message(STATUS "Python module path: ${PYTHON_MODULE_PATH}")
-
-# Rely on Homebrew Python 3.7 until CCP4 bundle it in
-# TODO: update upon release
-
-if (APPLE)
-find_path(PYTHON_INCLUDE_DIR NAMES Python.h
-          HINTS /usr/local/Frameworks/Python.framework/Headers
-		/usr/local/Frameworks/Python.framework/Versions/3.7/Headers
-                ${_PY_PREFIX}/include/python
-          NO_DEFAULT_PATH)
+# Get Python includes
+if(DEVKIT)
+  if (APPLE)
+    find_path(PYTHON_INCLUDE_DIR NAMES Python.h
+              HINTS /usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/include/python3.7m
+              NO_DEFAULT_PATH )
+  else()
+    find_path(PYTHON_INCLUDE_DIR NAMES Python.h
+              HINTS ${_PY_PREFIX}/include
+                    ${_PY_PREFIX}/include/python3.7
+                    ${_PY_PREFIX}/include/python3.6m
+              NO_DEFAULT_PATH)
+  endif()
 else()
   find_path(PYTHON_INCLUDE_DIR NAMES Python.h
-            HINTS ${_PY_PREFIX}/include/python3.6m
+            HINTS ${_PY_PREFIX}/include
+                  ${_PY_PREFIX}/include/python2.7
             NO_DEFAULT_PATH)
 endif()
 
-message(STATUS "Python.h is in: ${PYTHON_INCLUDE_DIR}")
-
 if (NOT PYTHON_INCLUDE_DIR)
     message(FATAL_ERROR "Python header not found.")
+else ()
+    message(STATUS "Python.h is in: ${PYTHON_INCLUDE_DIR}")
 endif()
 
-set(PYTHON_LIBRARIES ${PYTHON_LIBRARY})
-
-
-## OpenMP?
-#  Fine for now, but we are using C++11 threads on CCP4 7.1
-
-find_package(OpenMP)
-if(OPENMP_FOUND)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
-
+## Get Pybind11 through cmake
+#
 find_package(pybind11 CONFIG REQUIRED)
-pybind11_add_module(sails_module sails-pybind11.cpp)
-
 MESSAGE( "-- Found pybind11 v${pybind11_VERSION}: ${pybind11_INCLUDE_DIRS}")
 MESSAGE( "--   pybind11_INCLUDE_DIRS = ${pybind11_INCLUDE_DIRS}" )
 MESSAGE( "--   pybind11_LIBRARIES    = ${pybind11_LIBRARIES}" )
@@ -106,14 +102,14 @@ include_directories(${CCP4_INCLUDE_DIRS}
                     ${CMAKE_CURRENT_SOURCE_DIR}
                     ${pybind11_INCLUDE_DIRS}
                     "${PYTHON_INCLUDE_DIR}")
-
+## Create libsails
+#
 add_library(sails_lib
             sails-find.cpp
             sails-lib.cpp)
 
-## Add libprivateer
-#   This will change in the future. Will produce a suitable cmake file for it
-
+## Add libprivateer - better mechanism needed
+#
 add_library ( privateer SHARED IMPORTED )
 
 if (APPLE)
@@ -126,6 +122,8 @@ endif()
 
 target_link_libraries ( sails_lib ${CCP4_LIBRARIES} privateer )
 
+## Create Sails executables
+#
 add_executable(sails_exec
                sails.cpp)
 
@@ -146,13 +144,18 @@ target_link_libraries ( sails_minimax_exec     sails_lib ${CCP4_LIBRARIES} )
 
 set_target_properties ( sails_lib    PROPERTIES OUTPUT_NAME sails )
 set_target_properties ( sails_exec   PROPERTIES OUTPUT_NAME sails )
-set_target_properties ( sails_module PROPERTIES OUTPUT_NAME sails_core )
 
+## Make hybrid Python module
+#
+pybind11_add_module(sails_module sails-pybind11.cpp)
+set_target_properties ( sails_module PROPERTIES OUTPUT_NAME sails_core )
 target_link_libraries ( sails_module PRIVATE sails_lib ${CCP4_LIBRARIES} ${pybind11_LIBRARIES} )
 
-
+## And finally, install everything in their reet places
+#
+set     ( PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/py3 )
+message ( STATUS "Installing Python module to: ${PYTHON_MODULE_PATH}")
 file (COPY "python/sails" DESTINATION ${PYTHON_MODULE_PATH})
-
 install(FILES sails-lib.h
         DESTINATION include/sails)
 install(TARGETS sails_lib
