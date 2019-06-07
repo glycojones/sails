@@ -27,7 +27,7 @@ if (DEVKIT)
         find_program(PYTHON NAMES $ENV{PYTHON} python3.7
                             HINTS ${CMAKE_INSTALL_PREFIX}/bin)
     else()
-        find_program(PYTHON NAMES $ENV{PYTHON} python3.6m python3.6 python3
+        find_program(PYTHON NAMES $ENV{PYTHON} python3.7 python3.6m python3.6 python3
                             HINTS ${CMAKE_INSTALL_PREFIX}/bin
                             HINTS /usr/local/bin
                             HINTS /usr/bin )
@@ -56,8 +56,8 @@ else()
     message(STATUS "Python sys.prefix: ${_PY_PREFIX}")
 endif()
 # Get Python libraries
-find_library(PYTHON_LIBRARY NAMES python3.7 python3.6m python
-             HINTS ${_PY_PREFIX}/lib ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/libs
+find_library(PYTHON_LIBRARY NAMES python3.7 python3.6 python3.6m python
+             HINTS /usr/lib ${_PY_PREFIX}/lib ${_PY_PREFIX}/lib64 ${_PY_PREFIX}/libs
              NO_DEFAULT_PATH)
 if (NOT PYTHON_LIBRARY)
     message(FATAL_ERROR "Python library not found.")
@@ -117,7 +117,7 @@ if (APPLE)
                           IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libprivateer.dylib" )
 else()
   set_target_properties ( privateer PROPERTIES
-                          IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/libprivateer.so" )
+                          IMPORTED_LOCATION "/home/mihaela/devtools/install/lib/libprivateer.so" )
 endif()
 
 target_link_libraries ( sails_lib ${CCP4_LIBRARIES} privateer )

@@ -17,8 +17,8 @@
 int main( int argc, char** argv )
 {
 
-    clipper::String program_version = "MK I";
-    CCP4Program prog( "sails", program_version.c_str(), "$Date: 2019/05/05" );
+    clipper::String program_version = "MKI";
+    CCP4Program prog( "Sails", program_version.c_str(), "$Date:07/06/2019" );
 
     // defaults
     clipper::String title;
