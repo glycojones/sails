@@ -180,7 +180,7 @@ int main( int argc, char** argv )
     else
         std::cout << "no\n";
 
-    std::cout << "N-linked glycans: ";
+    std::cout << "Ligands: "; //
     if ( options.ligands )
         std::cout << "yes\n" << std::endl;
     else
@@ -194,6 +194,7 @@ int main( int argc, char** argv )
     if (!useMap)
     {
         // other initialisations
+        mtzfile.set_column_label_mode( clipper::CCP4MTZfile::Legacy ); //
         mtzfile.open_read( ipmtz );
         double res = clipper::Util::max( mtzfile.resolution().limit(), res_in );
         std::cout << std::endl << "Using reflections up to " << res << " Angstroms" << std::endl;
@@ -201,10 +202,9 @@ int main( int argc, char** argv )
         resol = clipper::Resolution( res );
 
         // Get work reflection data
-        clipper::HKL_info hkls;
+        clipper::HKL_info hkls;     
         mtzfile.open_read( ipmtz );
         hkls.init( mtzfile.spacegroup(), mtzfile.cell(), resol, true );
-
 
         clipper::HKL_data<clipper::data32::F_sigF>  wrk_f ( hkls );
         clipper::HKL_data<clipper::data32::ABCD>    wrk_hl( hkls );
@@ -224,7 +224,7 @@ int main( int argc, char** argv )
         //wrk_f1.mask( flag != 0 );
         for ( clipper::HKL_data_base::HKL_reference_index ih = hkls.first(); !ih.last(); ih.next() ) if ( flag[ih].flag() == 0 ) wrk_f1[ih] = clipper::data32::F_sigF();
         // and fill in hl
-        clipper::Spacegroup cspg = hkls.spacegroup();
+        clipper::Spacegroup cspg = hkls.spacegroup();       
         clipper::Cell cxtl = hkls.cell();
         clipper::Grid_sampling grid = clipper::Grid_sampling( cspg, cxtl, hkls.resolution() );
         xwrk = clipper::Xmap<float>( cspg, cxtl, grid );
