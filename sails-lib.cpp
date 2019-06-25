@@ -498,8 +498,7 @@ const sails::data::fingerprint sails::data::fingerprint_list[] =
         { { "C", 0.0, 0.0, 0.0 }, { "C", 0.0, 0.0, 0.0 }, { "C", 0.0, 0.0, 0.0 } }
     },*/ 
 
-     
- /*    
+     /*    
    {
         "NAG", "nglycan" , "B", "D", "N-Acetyl-D-Glucosamine", 6,
 		{ { "PK1", -2.405, 16.081, 13.767 }, { "PK1", -1.235, 16.595, 12.999 }, { "PK1", 0.011, 16.688, 13.863 },

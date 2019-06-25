@@ -180,7 +180,7 @@ int main( int argc, char** argv )
     else
         std::cout << "no\n";
 
-    std::cout << "Ligands: "; //
+    std::cout << "Ligands: "; 
     if ( options.ligands )
         std::cout << "yes\n" << std::endl;
     else
@@ -194,7 +194,7 @@ int main( int argc, char** argv )
     if (!useMap)
     {
         // other initialisations
-        mtzfile.set_column_label_mode( clipper::CCP4MTZfile::Legacy ); //
+        mtzfile.set_column_label_mode( clipper::CCP4MTZfile::Legacy ); 
         mtzfile.open_read( ipmtz );
         double res = clipper::Util::max( mtzfile.resolution().limit(), res_in );
         std::cout << std::endl << "Using reflections up to " << res << " Angstroms" << std::endl;
