@@ -126,6 +126,11 @@ int main( int argc, char** argv )
         {
             if ( ++arg < args.size() )
                 res_in = clipper::String(args[arg]).f();
+                if ( res_in > 6.0 || res_in < 0.5 ) {
+                  std::cout << "Error: Sails is unlikely to work at the specified resolution. Exiting... " << std::endl;
+                  prog.set_termination_message( "Failed" );
+                  return(1);
+                }
         }
         else if ( args[arg] == "-build" )
         {
@@ -144,7 +149,7 @@ int main( int argc, char** argv )
         }
     }
 
-    if (( args.size() <= 1 ) || ( !useMap && (( ipmtz == "NONE" ) || ( ipcol_fo == "NONE" ) || (ipcol_hl == "NONE"))) ) // print help and exit
+    if ( args.size() <= 1 || ( !useMap && ( ipmtz == "NONE" || ipcol_fo == "NONE" || ipcol_hl == "NONE")) ) // print help and exit
     {
         std::cout << "Usage: sails\n\n"
                   << "\t-mtzin <filename>\t\tCOMPULSORY\n"
@@ -180,7 +185,7 @@ int main( int argc, char** argv )
     else
         std::cout << "no\n";
 
-    std::cout << "Ligands: "; 
+    std::cout << "Ligands: ";
     if ( options.ligands )
         std::cout << "yes\n" << std::endl;
     else
@@ -194,7 +199,7 @@ int main( int argc, char** argv )
     if (!useMap)
     {
         // other initialisations
-        mtzfile.set_column_label_mode( clipper::CCP4MTZfile::Legacy ); 
+        mtzfile.set_column_label_mode( clipper::CCP4MTZfile::Legacy );
         mtzfile.open_read( ipmtz );
         double res = clipper::Util::max( mtzfile.resolution().limit(), res_in );
         std::cout << std::endl << "Using reflections up to " << res << " Angstroms" << std::endl;
@@ -202,7 +207,7 @@ int main( int argc, char** argv )
         resol = clipper::Resolution( res );
 
         // Get work reflection data
-        clipper::HKL_info hkls;     
+        clipper::HKL_info hkls;
         mtzfile.open_read( ipmtz );
         hkls.init( mtzfile.spacegroup(), mtzfile.cell(), resol, true );
 
@@ -224,7 +229,7 @@ int main( int argc, char** argv )
         //wrk_f1.mask( flag != 0 );
         for ( clipper::HKL_data_base::HKL_reference_index ih = hkls.first(); !ih.last(); ih.next() ) if ( flag[ih].flag() == 0 ) wrk_f1[ih] = clipper::data32::F_sigF();
         // and fill in hl
-        clipper::Spacegroup cspg = hkls.spacegroup();       
+        clipper::Spacegroup cspg = hkls.spacegroup();
         clipper::Cell cxtl = hkls.cell();
         clipper::Grid_sampling grid = clipper::Grid_sampling( cspg, cxtl, hkls.resolution() );
         xwrk = clipper::Xmap<float>( cspg, cxtl, grid );
