@@ -1,5 +1,4 @@
-/*! \file ss-find.cpp buccaneer library */
-/* (C) 2011 Kevin Cowtan & University of York all rights reserved */
+/*! \file sails-find.cpp */
 
 #include "sails-find.h"
 

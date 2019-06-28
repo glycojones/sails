@@ -10,35 +10,35 @@
 
 /*! Result class */
 class SearchResult {
-public:
-float score; int rot; int trn;
-bool operator <( SearchResult other ) const {
-        return score < other.score;
-}
+  public:
+    float score; int rot; int trn;
+    bool operator <( SearchResult other ) const {
+      return score < other.score;
+    }
 };
 
 class SSfind {
-public:
-typedef std::pair<clipper::Coord_orth,clipper::Coord_orth> Pair_coord;
+  public:
+    typedef std::pair<clipper::Coord_orth,clipper::Coord_orth> Pair_coord;
 
-void prep_xmap( const clipper::Xmap<float>& xmap,
-                const double radius );
-void prep_search( const clipper::Xmap<float>& xmap );
-void prep_search( const clipper::Xmap<float>& xmap,
-                  const double rhocut,
-                  const double radcut,
-                  const clipper::Coord_orth centre );
-std::vector<SearchResult> search( const std::vector<Pair_coord>& target_cs,
-                                  const std::vector<clipper::RTop_orth>& ops,
-                                  const double rhocut,
-                                  const double frccut = 0.0 ) const;
+    void prep_xmap( const clipper::Xmap<float>& xmap,
+                    const double radius );
+    void prep_search( const clipper::Xmap<float>& xmap );
+    void prep_search( const clipper::Xmap<float>& xmap,
+                      const double rhocut,
+                      const double radcut,
+                      const clipper::Coord_orth centre );
+    std::vector<SearchResult> search( const std::vector<Pair_coord>& target_cs,
+                                      const std::vector<clipper::RTop_orth>& ops,
+                                      const double rhocut,
+                                      const double frccut = 0.0 ) const;
 
-private:
-std::vector<float> mapbox;
-std::vector<int> srctrn;
-clipper::Grid grid;
-clipper::Grid_range mxgr;
-clipper::Mat33<> grrot;
+  private:
+    std::vector<float> mapbox;
+    std::vector<int> srctrn;
+    clipper::Grid grid;
+    clipper::Grid_range mxgr;
+    clipper::Mat33<> grrot;
 };
 
 

@@ -331,7 +331,7 @@ void sails::process_validation_options ( clipper::String validation_string, sail
     return;
 }
 
-
+// need to change this to return results, then make another function to turn that into minimol
 clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit )
 {
     double rad, sigcut;
@@ -347,6 +347,8 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
     clipper::MAtom peak_atom, void_atom;
     clipper::MMonomer peaks, voids, ideal;
 
+    // to do: get the relevant set of fingerprints
+    // maybe use a std::vector ?
     ideal = sails::get_ideal_monomer ( sails::data::fingerprint_list[0] );
     peaks = sails::get_peak_monomer  ( sails::data::fingerprint_list[0] );
     voids = sails::get_void_monomer  ( sails::data::fingerprint_list[0] );
