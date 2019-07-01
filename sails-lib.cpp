@@ -459,7 +459,7 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
     return mol_new;
 }
 
-const sails::data::fingerprint sails::data::fingerprint_list[] =
+const std::vector < sails::data::fingerprint > sails::data::fingerprint_list =
 {
 
   {

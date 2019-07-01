@@ -96,8 +96,27 @@ namespace sails
             bool validate_handedness;
         };
 
-        extern const fingerprint fingerprint_list[];
+        extern const std::vector < fingerprint > fingerprint_list;
         extern const int fingerprint_list_size;
+
+        std::vector < fingerprint > get_fingerprints_by_context (std::string context) {
+          std::vector < fingerprint > vec_fp;
+          for ( auto fp : fingerprint_list ) {
+            if ( fp.context == context )
+              vec_fp.push_back (fp);
+          }
+          return vec_fp;
+        }
+
+        std::vector < fingerprint > get_fingerprints_by_name (std::string name ) {
+          std::vector < fingerprint > vec_fp;
+          for ( auto fp : fingerprint_list ) {
+            if ( fp.name_short == name )
+              vec_fp.push_back (fp);
+          }
+          return vec_fp;
+        }
+
     } // namespace data
 
     // Coot support, Scheme
