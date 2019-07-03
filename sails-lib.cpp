@@ -350,13 +350,14 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
 
     // to do: get the relevant set of fingerprints
     // maybe use a std::vector ?
-    std::string context="ligands";
+    std::string context="ligand";
     if ( options.nglycans )
-      context = "nglycans";
-    else
-      context = "oglycans";
+      context = "nglycan";
+    else if ( options.oglycans )
+      context = "oglycan";
 
     std::vector < sails::data::fingerprint > fp_data = sails::data::get_fingerprints_by_context(context);
+    std::cout << fp_data.size() << std::endl;
     ideal = sails::get_ideal_monomer ( fp_data[0] );
     peaks = sails::get_peak_monomer  ( fp_data[0] );
     voids = sails::get_void_monomer  ( fp_data[0] );
