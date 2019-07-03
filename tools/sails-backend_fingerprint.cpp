@@ -570,7 +570,9 @@ int main( int argc, char** argv )
     coord_out << "TER" << std::endl;
 
     // output the model
-
+    // To do: get monomer from library, superpose
+    // Or maybe skip this part altogether and superpose at building stage
+    
     int resnumber = total_atom_count+1;
 
     for ( int natm = 1 ; natm <= mol[0][0].size() ; natm++)
