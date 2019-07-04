@@ -133,6 +133,20 @@ int main( int argc, char** argv )
 
     std::cout << mol.spacegroup().symbol_hm() << " " << mol.cell().format() << " " << mol.atom_list().size() << std::endl;
 
+
+    if ( sugar == "NONE" ) {
+      if ( mol.model().size() > 0 && mol.model()[0].size() > 0 ) {
+        sugar = mol[0][0].type();
+        std::cout << "As no three-letter code was provided (-sugar), " << sugar
+                  << " has been inferred from the content of the PDB file" << std::endl;
+      }
+      else {
+        // no code and nothing available from the PDB file? we shall not proceed
+        prog.set_termination_message( "Failed" );
+        return(1);
+      }
+    }
+
     clipper::NXmap<float> max_map;
     clipper::CCP4MAPfile mapfile;
     mapfile.open_read(ipmaxmap);
@@ -398,7 +412,7 @@ int main( int argc, char** argv )
     float mean_minmap, stdev_minmap;
     mean_minmap = stdev_minmap = 0.0;
 
-    std::cout << "\t{" << std::endl << "\t\t\"SUG\", \"nglycan\" , \"B\", \"D\", \"complete name\", " << mol[0][0].size() << "\n\t\t{" << std::endl;
+    std::cout << "\t{" << std::endl << "\t\t\"" << sugar << "\", \"nglycan\", " << mol[0][0].size() << ",\n\t\t{" << std::endl;
 
     for ( int natm = 1 ; natm <= mol[0][0].size() ; natm++) // mean calculation at the atom positions
     {
@@ -572,7 +586,7 @@ int main( int argc, char** argv )
     // output the model
     // To do: get monomer from library, superpose
     // Or maybe skip this part altogether and superpose at building stage
-    
+
     int resnumber = total_atom_count+1;
 
     for ( int natm = 1 ; natm <= mol[0][0].size() ; natm++)
