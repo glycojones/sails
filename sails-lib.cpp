@@ -200,9 +200,14 @@ clipper::ftype sails::real_space_correlation ( const clipper::Xmap<float>& map1,
 
 clipper::MMonomer sails::get_ideal_monomer ( const sails::data::fingerprint& fp )
 {
+  // This needs rewriting to get something from mon_lib using Privateer
+  // and superpose it onto the peaks
     clipper::MMonomer tmp_mon;
     tmp_mon.set_type ( fp.name_short );
     tmp_mon.set_id ( 0 );
+
+    privateer::restraints::CarbohydrateDictionary dict();
+    dict.get_from_monlib(fp.name_short);
 
     for ( int index = 0; index < fp.num_control_points ; index++ )
     {

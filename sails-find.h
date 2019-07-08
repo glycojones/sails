@@ -6,6 +6,7 @@
 #define SS_FIND_H
 
 #include <clipper/clipper-contrib.h>
+#include <privateer/privateer-lib.h>
 
 
 /*! Result class */

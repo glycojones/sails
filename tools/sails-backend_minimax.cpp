@@ -299,17 +299,6 @@ int main( int argc, char** argv )
                             atomvr.push_back ( mm[index].name().trim() );
                         }
 
-                        // std::cout << "an[0]=" << an[0] << " an[1]=" << an[1] << " an[2]=" << an[2] << std::endl;
-                        // std::cout << "atomr=" << atomr << std::endl;
-
-                        // for ( int j = 0 ; j < atomvt.size() ; j++ )
-                        //    std::cout << "atomvt[" << j << "]=" << atomvt[j] << " ";
-
-                        // std::cout << std::endl;
-
-                        // for ( int j = 0 ; j < atomv.size() ; j++ )
-                        //    std::cout << "atomv[" << j << "]=" << atomv[j] << " ";
-
                         // make rtop
                         clipper::Coord_orth c1 = mm[an[0]].coord_orth()-mm[an[1]].coord_orth();
                         clipper::Coord_orth c2 = mm[an[2]].coord_orth()-mm[an[1]].coord_orth();
