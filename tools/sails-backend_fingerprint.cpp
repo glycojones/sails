@@ -564,7 +564,6 @@ int main( int argc, char** argv )
         std::cout << "{ \"VD1\", " << minimum_spot.x() << " "
                   << minimum_spot.y() << " "
                   << minimum_spot.z() << " }" << std::endl;
-
     }
 
     coord_out << "TER" << std::endl;
@@ -572,7 +571,7 @@ int main( int argc, char** argv )
     // output the model
     // To do: get monomer from library, superpose
     // Or maybe skip this part altogether and superpose at building stage
-    
+
     int resnumber = total_atom_count+1;
 
     for ( int natm = 1 ; natm <= mol[0][0].size() ; natm++)
