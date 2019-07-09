@@ -72,9 +72,6 @@ namespace sails
         {
             clipper::String name_short;
             clipper::String context;
-            clipper::String anomer;
-            clipper::String handedness;
-            clipper::String name_long;
             int num_control_points;
             dummy_atom peaks[20];
             dummy_atom voids[20];
