@@ -138,6 +138,7 @@ namespace sails
     clipper::MMonomer get_void_monomer  ( const sails::data::fingerprint& fp );
 
     void process_validation_options ( clipper::String validation_string, sails::data::validation_flags &flags );
+    void get_input_codes ( clipper::String input_string, std::vector<clipper::String> &codes);
 		void process_building_options ( clipper::String building_options, sails::data::build_options &flags );
     clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
 

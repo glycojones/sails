@@ -295,6 +295,10 @@ void sails::process_building_options ( clipper::String building_options, sails::
     return;
 }
 
+void get_input_codes ( clipper::String input_string, std::vector<clipper::String> &codes) {
+  codes = input_string.split ( "," );
+}
+
 void sails::process_validation_options ( clipper::String validation_string, sails::data::validation_flags &flags )
 {
     std::vector < clipper::String > buffer = validation_string.split( "," );

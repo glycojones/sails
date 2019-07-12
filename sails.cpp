@@ -31,6 +31,8 @@ int main( int argc, char** argv )
     clipper::String ippdb =     "NONE";
     clipper::String oppdb =     "xyzout.pdb";
     clipper::String opmap =     "NONE";
+    clipper::String ipcodes =   "NONE";
+    std::vector<clipper::String> input_codes;
     double res_in = 2.0;         // Resolution limit
     int nhit = 10;
     int verbose = 0;
@@ -131,6 +133,12 @@ int main( int argc, char** argv )
                   prog.set_termination_message( "Failed" );
                   return(1);
                 }
+        }
+        else if ( args[arg] == "-searchfor" ) {
+          if ( ++arg < args.size() ) {
+            ipcodes = args[arg];
+            get_input_codes (ipcodes, input_codes);
+          }
         }
         else if ( args[arg] == "-build" )
         {
