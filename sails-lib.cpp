@@ -206,8 +206,8 @@ clipper::MMonomer sails::get_ideal_monomer ( const sails::data::fingerprint& fp 
     tmp_mon.set_type ( fp.name_short );
     tmp_mon.set_id ( 0 );
 
-    privateer::restraints::CarbohydrateDictionary dict();
-    dict.get_from_monlib(fp.name_short);
+    privateer::restraints::CarbohydrateDictionary dict;
+    dict.read_from_monlib ( fp.name_short );
 
     for ( int index = 0; index < fp.num_control_points ; index++ )
     {
