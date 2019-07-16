@@ -51,6 +51,7 @@
 #include <clipper/clipper.h>
 #include <clipper/clipper-mmdb.h>
 #include <clipper/clipper-minimol.h>
+#include <privateer/privateer-restraints.h>
 #include "sails-find.h"
 
 
@@ -70,7 +71,7 @@ namespace sails
 
         struct fingerprint
         {
-            clipper::String name_short;
+            std::string name_short;
             clipper::String context;
             int num_control_points;
             dummy_atom peaks[20];

@@ -137,7 +137,7 @@ int main( int argc, char** argv )
         else if ( args[arg] == "-searchfor" ) {
           if ( ++arg < args.size() ) {
             ipcodes = args[arg];
-            get_input_codes (ipcodes, input_codes);
+            sails::get_input_codes (ipcodes, input_codes);
           }
         }
         else if ( args[arg] == "-build" )

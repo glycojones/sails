@@ -46,7 +46,6 @@
 //L  MA 02111-1307 USA
 
 #include "sails-lib.h"
-#include <privateer/privateer-lib.h>
 
 void sails::insert_coot_prologue_scheme ( std::fstream& output )
 {
@@ -295,7 +294,7 @@ void sails::process_building_options ( clipper::String building_options, sails::
     return;
 }
 
-void get_input_codes ( clipper::String input_string, std::vector<clipper::String> &codes) {
+void sails::get_input_codes ( clipper::String input_string, std::vector<clipper::String> &codes) {
   codes = input_string.split ( "," );
 }
 
