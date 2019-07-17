@@ -98,6 +98,9 @@ namespace sails
 
         extern const fingerprint fingerprint_list[];
         extern const int fingerprint_list_size;
+
+        int count_number_of_fingerprints (); /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     } // namespace data
 
     // Coot support, Scheme
@@ -125,6 +128,5 @@ namespace sails
 		void process_building_options ( clipper::String building_options, sails::data::build_options &flags );
     clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
 
-} // namespace sails
-
+}
 #endif

@@ -460,7 +460,7 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
 const sails::data::fingerprint sails::data::fingerprint_list[] =
 {
      
-   /* {
+    {
         "ARA", "ligand", "A", "L", "alpha-L-Arabinose", 10,
         { { "AO5", 2.826, 0.443, 0.013 }, { "AC5", 2.182, 0.000,-1.193 }, { "AC4", 0.772, 0.418,-1.248 },
           { "AO4", 0.631, 1.605,-1.628 }, { "AC1", 2.206, 0.000, 1.183 }, { "AO1", 2.875, 0.588, 2.298 },
@@ -472,7 +472,7 @@ const sails::data::fingerprint sails::data::fingerprint_list[] =
           { "C4",  0.728, 0.462,-1.271 }, { "C5",  2.172, 0.000,-1.203 }, { "O1",  2.874, 0.596, 2.298 },
           { "O2",  0.088, 0.115, 2.439 }, { "O3", -1.357, 0.457,-0.031 }, { "O4",  0.635, 1.868,-1.478 }, { "O5", 2.817, 0.460, 0.003 } }
     },  
-    {
+     {
         "NAG", "nglycan", "B", "D", "N-Acetyl-D-Glucosamine", 15,
         { { "PK1", 0, 0, 0 }, { "PK1", 0.738, 0.455, -1.276 }, { "PK1", 2.222, 0, -1.237 },
           { "PK1", 3.031, 0.678, -2.389 }, { "PK1", -0.699, 0.854, 3.364 }, { "PK1", -1.386, 0.144, 4.516 },
@@ -496,9 +496,9 @@ const sails::data::fingerprint sails::data::fingerprint_list[] =
         { { "P", 0.0, 0.0, 0.0 }, { "P", 0.0, 0.0, 0.0 }, { "P", 0.0, 0.0, 0.0 } } ,
         { { "V", 0.0, 0.0, 0.0 }, { "V", 0.0, 0.0, 0.0 }, { "V", 0.0, 0.0, 0.0 } } ,
         { { "C", 0.0, 0.0, 0.0 }, { "C", 0.0, 0.0, 0.0 }, { "C", 0.0, 0.0, 0.0 } }
-    },*/ 
+    } /* , 
 
-     /*    
+         
    {
         "NAG", "nglycan" , "B", "D", "N-Acetyl-D-Glucosamine", 6,
 		{ { "PK1", -2.405, 16.081, 13.767 }, { "PK1", -1.235, 16.595, 12.999 }, { "PK1", 0.011, 16.688, 13.863 },
@@ -559,7 +559,7 @@ const sails::data::fingerprint sails::data::fingerprint_list[] =
           { "ATM", 0.878, 1.969, 1.252 }, { "ATM", -1.19, 0.73, 0.174 }, { "ATM", 0.059, -0.054, -2.442 }, 
           { "ATM", 2.903, 0.293, 0.022 }, { "ATM", 4.276, 0.924, -2.342 }, { "ATM", 2.259, -1.38, 1.058 } } */
 
-    {
+  /*   {
         
 		"MAN", "nglycan" , "B", "D", "Alpha-D-Mannopyranose", 12,         ////4C1 //////////////////////////////////////////////////
 		{ { "PK1", 2.198, 0, 1.218 }, { "PK1", 0.747, 0.45, 1.245 }, { "PK1", 0, 0, 0 },
@@ -579,7 +579,7 @@ const sails::data::fingerprint sails::data::fingerprint_list[] =
         
     }
 
- /*   {
+    {
 		"BMA", "nglycan" , "B", "D", "beta-D-mannopyranose", 12,
 		{ { "PK1", 2.201, 0, 1.208 }, { "PK1", 0.734, 0.434, 1.265 }, { "PK1", 0, 0, 0 }, 
           { "PK1", 0.741, 0.484, -1.238 }, { "PK1", 2.19, 0, -1.202 }, { "PK1", 3.021, 0.511, -2.372 }, 
@@ -594,4 +594,9 @@ const sails::data::fingerprint sails::data::fingerprint_list[] =
           { "ATM", 0.648, 1.845, 1.439 }, { "ATM", -1.334, 0.51, 0.008 }, { "ATM", 0.102, -0.003, -2.417 }, 
           { "ATM", 2.823, 0.465, 0.004 }, { "ATM", 3.075, 1.936, -2.385 }, { "ATM", 2.856, 0.535, 2.391 } } 
     }  */
-};
+}; 
+
+int sails::data::count_number_of_fingerprints () {
+    return sizeof(sails::data::fingerprint_list) / sizeof(sails::data::fingerprint_list[0]);
+} 
+    

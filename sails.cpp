@@ -261,6 +261,8 @@ int main( int argc, char** argv )
 
 		clipper::MiniMol mol_new = sails::build_sugars (xwrk, options, step, nhit);
 
+    std::cout << "Number of fingerprints is " << sails::data::count_number_of_fingerprints << '\n'; ///////////////////////////////////
+
     clipper::MMDBfile pdbfile;
     pdbfile.export_minimol( mol_new );
     pdbfile.write_file( oppdb );

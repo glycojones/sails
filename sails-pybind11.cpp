@@ -21,4 +21,8 @@ PYBIND11_MODULE(sails, m)
 {
   m.doc() = "Sails's Python interface.\nVersion history:\n- 2019-present MKI (pybind11)"; // docstring
 
+  m.def("count_number_of_fingerprints", 
+  &sails::data::count_number_of_fingerprints, 
+  "Counts number of fingerprints"); 
+ 
 }
