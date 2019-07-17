@@ -180,25 +180,39 @@ int main( int argc, char** argv )
 
     sails::process_building_options ( building_options, options );
 
-    std::cout << "Detecting:\n"
-              << "N-linked glycans: ";
-    if ( options.nglycans )
-        std::cout << "yes\n";
-    else
-        std::cout << "no\n";
+    if ( options.nglycans || options.oglycans || options.ligands ) {
+      std::cout << "Detecting:\n"
+                << "N-linked glycans: ";
+      if ( options.nglycans )
+          std::cout << "yes\n";
+      else
+          std::cout << "no\n";
 
-    std::cout << "O-linked glycans: ";
-    if ( options.oglycans )
-        std::cout << "yes\n";
-    else
-        std::cout << "no\n";
+      std::cout << "O-linked glycans: ";
+      if ( options.oglycans )
+          std::cout << "yes\n";
+      else
+          std::cout << "no\n";
 
-    std::cout << "Ligands: ";
-    if ( options.ligands )
-        std::cout << "yes\n" << std::endl;
-    else
-        std::cout << "no\n" << std::endl;
-
+      std::cout << "Ligands: ";
+      if ( options.ligands )
+          std::cout << "yes\n" << std::endl;
+      else
+          std::cout << "no\n" << std::endl;
+    }
+    else { // let's hope for a list of codes
+      if ( input_codes.size() > 0 ) {
+        std::cout << "Detecting: ";
+        for ( auto item : input_codes )
+          std::cout << item << " ";
+      }
+      else {
+        std::cout << "No input codes or detection modes have been specified. Quitting..."
+                  << std::endl;
+        prog.set_termination_message( "Failed" );
+        return(1);
+      }
+    }
 
     using clipper::data32::Compute_fphi_from_fsigf_phifom;
     clipper::Resolution resol;
