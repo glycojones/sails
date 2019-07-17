@@ -155,11 +155,11 @@ target_link_libraries ( sails_module PRIVATE sails_lib ${CCP4_LIBRARIES} ${pybin
 #
 set     ( PYTHON_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/py3 )
 message ( STATUS "Installing Python module to: ${PYTHON_MODULE_PATH}")
-file (COPY "python/sails" DESTINATION ${PYTHON_MODULE_PATH})
-install(FILES sails-lib.h
-        DESTINATION include/sails)
-install(TARGETS sails_lib
-        LIBRARY DESTINATION "${LIB_INSTALL_DIR}")
+install ( DIRECTORY "python/sails" DESTINATION ${PYTHON_MODULE_PATH})
+install ( FILES sails-lib.h
+          DESTINATION include/sails)
+install ( TARGETS sails_lib
+          LIBRARY DESTINATION "${LIB_INSTALL_DIR}")
 install ( TARGETS sails_exec DESTINATION bin)
 install ( TARGETS sails_module DESTINATION ${PYTHON_MODULE_PATH}/sails )
 

@@ -43,6 +43,7 @@ int main( int argc, char** argv )
     clipper::Xmap<float> xwrk;
     clipper::String building_options = ""; // can be 'all', or { 'nglycans' 'oglycans' 'ligands' }
     sails::data::build_options options = { false, false, false };
+    sails::initialise_fingerprints();
 
     std::cout << std::endl << "Copyright 2013-2019 Mihaela Atanasova, Kevin Cowtan and Jon Agirre." << std::endl;
 

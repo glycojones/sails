@@ -94,8 +94,8 @@ namespace sails
             bool validate_handedness;
         };
 
-        extern const std::vector < fingerprint > fingerprint_list;
-        extern const int fingerprint_list_size;
+        std::vector < fingerprint > fingerprint_list;
+        int fingerprint_list_size;
 
         std::vector < fingerprint > get_fingerprints_by_context (std::string context) {
           std::vector < fingerprint > vec_fp;
@@ -114,6 +114,8 @@ namespace sails
           }
           return vec_fp;
         }
+
+        int count_number_of_fingerprints ();
 
     } // namespace data
 
@@ -142,7 +144,7 @@ namespace sails
     void get_input_codes ( clipper::String input_string, std::vector<clipper::String> &codes);
 		void process_building_options ( clipper::String building_options, sails::data::build_options &flags );
     clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
+    void initialise_fingerprints ();
 
-} // namespace sails
-
+}
 #endif

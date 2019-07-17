@@ -17,8 +17,15 @@ using namespace pybind11::literals;
 
 // pybind11 module definition
 //
-PYBIND11_MODULE(sails, m)
+PYBIND11_MODULE(sails_core, m)
 {
   m.doc() = "Sails's Python interface.\nVersion history:\n- 2019-present MKI (pybind11)"; // docstring
 
+  m.def("count_number_of_fingerprints",
+  &sails::data::count_number_of_fingerprints,
+  "Counts number of fingerprints");
+
+  m.def ("initialise_fingerprints",
+  &sails::initialise_fingerprints,
+  "Intialises fingerprints");
 }
