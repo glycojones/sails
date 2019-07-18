@@ -546,7 +546,7 @@ void sails::initialise_fingerprints () {
 }
 
 
-int sails::data::count_number_of_fingerprints () {
+int sails::data::number_of_fingerprints () {
     //return sizeof(sails::data::fingerprint_list) / sizeof(sails::data::fingerprint_list[0]);
     return fingerprint_list.size();
 }

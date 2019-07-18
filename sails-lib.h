@@ -115,7 +115,7 @@ namespace sails
           return vec_fp;
         }
 
-        int count_number_of_fingerprints ();
+        int number_of_fingerprints ();
 
     } // namespace data
 
