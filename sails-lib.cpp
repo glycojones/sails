@@ -366,7 +366,7 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
 
     std::vector < sails::data::fingerprint > fp_data = sails::data::get_fingerprints_by_context(context);
     std::cout << fp_data.size() << std::endl;
-    ideal = sails::get_ideal_monomer ( fp_data[0] );
+    ideal = sails::get_ideal_monomer ( fp_data[0] ); // need to continue work here
     peaks = sails::get_peak_monomer  ( fp_data[0] );
     voids = sails::get_void_monomer  ( fp_data[0] );
 

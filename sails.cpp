@@ -169,7 +169,7 @@ int main( int argc, char** argv )
                   << "\t-colin-free <colpath>\t\tfree R column\n"
                   << "\t-pdbin <filename>\t\tinitial model to be extended\n"
                   << "\t-pdbout <filename>\t\toutput atomic model\n"
-                  << "\t-build \t\t\t\t{all,nglycans,oglycans,ligands}\n\t\t\t\t\tDefault is nglycans\n"
+                  << "\t-build \t\t\t\t{all,nglycans,oglycans,ligands}\n\t\t\t\t\tDefault is ligands\n"
                   << "\t-resolution <resolution/A>\t(def: 2.0 angstroems)\n"
                   << "\t-step <degrees>\t\t\tangular sampling (def: 15 deg)\n"
                   << "\t-mapin <filename>\t\tuse precomputed electron density\n"
@@ -237,8 +237,8 @@ int main( int argc, char** argv )
         clipper::HKL_data<clipper::data32::F_sigF>  wrk_f ( hkls );
         clipper::HKL_data<clipper::data32::ABCD>    wrk_hl( hkls );
         clipper::HKL_data<clipper::data32::Phi_fom> wrk_pw( hkls );
-        clipper::HKL_data<clipper::data32::F_phi>   fphi( hkls );
-        clipper::HKL_data<clipper::data32::Flag>    flag( hkls );
+        clipper::HKL_data<clipper::data32::F_phi>   fphi  ( hkls );
+        clipper::HKL_data<clipper::data32::Flag>    flag  ( hkls );
         if ( ipcol_fo != "NONE" ) mtzfile.import_hkl_data( wrk_f ,ipcol_fo );
         if ( ipcol_hl != "NONE" ) mtzfile.import_hkl_data( wrk_hl,ipcol_hl );
         if ( ipcol_pw != "NONE" ) mtzfile.import_hkl_data( wrk_pw,ipcol_pw );
