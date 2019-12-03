@@ -210,7 +210,7 @@ clipper::MMonomer sails::get_ideal_monomer ( const sails::data::fingerprint& fp 
 
     for ( int index = 0; index < fp.num_control_points ; index++ )
     {
-        clipper::MAtom tmp_atm;
+        clipper::MAtom tmp_atm;      
         clipper::Coord_orth coords(fp.atoms[index].x, fp.atoms[index].y, fp.atoms[index].z );
         tmp_atm.set_coord_orth ( coords );
         tmp_atm.set_name ( fp.atoms[index].atom_name );
@@ -344,10 +344,7 @@ void sails::process_validation_options ( clipper::String validation_string, sail
 clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit )
 {
     double rad, sigcut;
-    clipper::MPolymer mprep;
     typedef std::pair<clipper::Coord_orth,clipper::Coord_orth> Pair_coord;
-    std::vector<Pair_coord> all_co;
-
 
     // get cutoff (for optimisation)
     clipper::Map_stats stats( xwrk );
@@ -358,37 +355,13 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
 
     // to do: get the relevant set of fingerprints
     // maybe use a std::vector ?
+    ////TODO: add a "build all" option
     std::string context="ligand";
     if ( options.nglycans )
       context = "nglycan";
     else if ( options.oglycans )
       context = "oglycan";
-
-    std::vector < sails::data::fingerprint > fp_data = sails::data::get_fingerprints_by_context(context);
-    std::cout << fp_data.size() << std::endl;
-    ideal = sails::get_ideal_monomer ( fp_data[0] );
-    peaks = sails::get_peak_monomer  ( fp_data[0] );
-    voids = sails::get_void_monomer  ( fp_data[0] );
-
-    mprep.insert ( ideal, -1 );
-
-    // set up targets
-    for ( int r = 0; r < peaks.size(); r++ )
-        all_co.push_back( Pair_coord( peaks[r].coord_orth(), voids[r].coord_orth() ) );
-
-    // get map radius
-    clipper::Atom_list atoms = voids.atom_list();
-    double r2 = 0.0;
-
-    for ( int a = 0; a < atoms.size(); a++ )
-    {
-        double d2 = atoms[a].coord_orth().lengthsq();
-        if ( d2 > r2 )
-            r2 = d2;
-    }
-
-    rad = sqrt( r2 ) + 1.0;
-
+ 
     // make a list of rotations
     std::vector<clipper::RTop_orth> rots;
 
@@ -420,47 +393,74 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
                 }
             }
     }
-
-    // feature search
-    SSfind ssfind;
-    ssfind.prep_xmap( xwrk, rad );
-    ssfind.prep_search( xwrk );
-    std::vector<SearchResult> results =
-
-    ssfind.search( all_co, rots, sigcut, 0.0 );
-
-    std::sort( results.begin(), results.end() );
-    std::reverse( results.begin(), results.end() );
-    std::cout << results.size() << std::endl;
-
-    for ( int i = 0; i < clipper::Util::min( int(results.size()), nhit ); i++ )
-        std::cout << i << " " << results[i].score << " " << results[i].rot << " " << results[i].trn << std::endl;
-
-    // output
-    clipper::MiniMol mol_new( xwrk.spacegroup(), xwrk.cell() );
+    
     const clipper::String chainid1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const clipper::String chainid2 = "abcdefghijklmnopqrstuvwxyz";
-
+    
+    clipper::MiniMol mol_new( xwrk.spacegroup(), xwrk.cell() );
     clipper::Grid_sampling grid = xwrk.grid_sampling();
 
-    for ( int i = 0; i < clipper::Util::min( int(results.size()), nhit ); i++ )
-    {
+    std::vector < sails::data::fingerprint > fp_data = sails::data::get_fingerprints_by_context(context);
+    std::cout << "Number of " << context << " fingerprints: " << fp_data.size() << std::endl;
+
+    for (int i=0; i < fp_data.size(); i++){
+        clipper::MPolymer mprep;
+        std::vector<Pair_coord> all_co;
+
+        std::cout << "Checking for " << fp_data[i].name_short << std::endl;
+        ideal = sails::get_ideal_monomer ( fp_data.at(i) );
+        peaks = sails::get_peak_monomer  ( fp_data.at(i) );
+        voids = sails::get_void_monomer  ( fp_data.at(i) );
+        mprep.insert ( ideal, -1 );
+
+        // set up targets
+        for ( int r = 0; r < peaks.size(); r++ )
+            all_co.push_back( Pair_coord( peaks[r].coord_orth(), voids[r].coord_orth() ) );
+
+        // get map radius
+        clipper::Atom_list atoms = voids.atom_list();
+        double r2 = 0.0;
+
+        for ( int a = 0; a < atoms.size(); a++ )
+        {
+            double d2 = atoms[a].coord_orth().lengthsq();
+            if ( d2 > r2 )
+                r2 = d2;
+        }
+
+        rad = sqrt( r2 ) + 1.0;
+
+        SSfind ssfind;
+        ssfind.prep_xmap( xwrk, rad );
+        ssfind.prep_search( xwrk );
+        std::vector<SearchResult> results = ssfind.search( all_co, rots, sigcut, 0.0 );
+
+        std::sort( results.begin(), results.end() );
+        std::reverse( results.begin(), results.end() );
+        std::cout << results.size() << std::endl;
+
+        for ( int j = 0; j < clipper::Util::min( int(results.size()), nhit ); j++ )
+            std::cout << j << " " << results[j].score << " " << results[j].rot << " " << results[j].trn << std::endl;
+        
+
+        for ( int k = 0; k < clipper::Util::min( int(results.size()), nhit ); k++ )
+        {
         clipper::String id; int roff;
 
-        if ( i < 26 )
+        if ( k < 26 )
         {
-            id = chainid1.substr( i, 1 );
+            id = chainid1.substr( k, 1 );
             roff = 0;
         }
         else
         {
-            id = chainid2.substr( (i-26)/100, 1 );
+            id = chainid2.substr( (k-26)/100, 1 );
             roff = 10*(i%100);
         }
 
         clipper::MPolymer mprot = mprep;
-        int ir = results[i].rot;
-        int it = results[i].trn;
+        int ir = results[k].rot;
+        int it = results[k].trn;
         clipper::RTop_orth rtop( rots[ir].rot(),
                                  xwrk.coord_orth( grid.deindex(it).coord_map() ) );
         mprot.transform( rtop );
@@ -470,14 +470,13 @@ clipper::MiniMol sails::build_sugars ( clipper::Xmap<float>& xwrk, sails::data::
             mprot[r].set_seqnum( roff+mprot[r].seqnum() );
 
         mol_new.insert( mprot );
-
+        }
     }
-
     return mol_new;
 }
 
 void sails::initialise_fingerprints () {
-  sails::data::fingerprint_list = {
+  sails::data::fingerprint_list = {    
     {
       "ARA", "ligand", 10,
       { { "AO5", 2.826, 0.443, 0.013 }, { "AC5", 2.182, 0.000,-1.193 }, { "AC4", 0.772, 0.418,-1.248 },
@@ -490,63 +489,58 @@ void sails::initialise_fingerprints () {
         { "C4",  0.728, 0.462,-1.271 }, { "C5",  2.172, 0.000,-1.203 }, { "O1",  2.874, 0.596, 2.298 },
         { "O2",  0.088, 0.115, 2.439 }, { "O3", -1.357, 0.457,-0.031 }, { "O4",  0.635, 1.868,-1.478 }, { "O5", 2.817, 0.460, 0.003 } }
     },
-    {
-        "NAG", "nglycan", 15,
-        { { "PK1", 0, 0, 0 }, { "PK1", 0.738, 0.455, -1.276 }, { "PK1", 2.222, 0, -1.237 },
-          { "PK1", 3.031, 0.678, -2.389 }, { "PK1", -0.699, 0.854, 3.364 }, { "PK1", -1.386, 0.144, 4.516 },
-          { "PK1", -0.002, -0.007, 2.517 }, { "PK1", -1.338, 0.547, -0.016 }, { "PK1", 0.061, -0.095, -2.424 },
-          { "PK1", 3.139, -0.092, -3.582 }, { "PK1", -0.76, 2.089, 3.2 }, { "PK1", 3.064, 0.507, 2.434 } } ,
-        { { "VD1", 5.25, 1.25, 3.5 }, { "VD1", 5, -0.5, -1.25 }, { "VD1", -2.75, -8.88178e-16, 2 },
-          { "VD1", 3.5, -5, 1 }, { "VD1", 1, 1.5, -4.25 }, { "VD1", -3.25, -3.5, -3 },
-          { "VD1", -1, 5, 2.5 }, { "VD1", 8.88178e-16, -2, 5.75 }, { "VD1", -4.5, 3.25, -2.75 },
-          { "VD1", 6.5, -2.5, 3 }, { "VD1", 2.5, 5.75, -2 }, { "VD1", -2.25, -5.75, 1.5 } } ,
-        { { "ATM", 2.278, 0, 1.268 }, { "ATM", 0.751, 0.417, 1.309 }, { "ATM", 0, 0, 0 },
-          { "ATM", 0.738, 0.455, -1.276 }, { "ATM", 2.222, 0, -1.237 }, { "ATM", 3.031, 0.678, -2.389 },
-          { "ATM", -0.699, 0.854, 3.364 }, { "ATM", -1.386, 0.144, 4.516 }, { "ATM", -0.002, -0.007, 2.517 },
-          { "ATM", -1.338, 0.547, -0.016 }, { "ATM", 0.061, -0.095, -2.424 }, { "ATM", 2.887, 0.396, 0.013 },
-          { "ATM", 3.139, -0.092, -3.582 }, { "ATM", -0.76, 2.089, 3.2 }, { "ATM", 3.064, 0.507, 2.434 } }
+    { //test ARA fingerprint
+      "NAG", "ligand", 10,
+      { { "AO5", 2.826, 0.443, 0.013 }, { "AC5", 2.182, 0.000,-1.193 }, { "AC4", 0.772, 0.418,-1.248 },
+        { "AO4", 0.631, 1.605,-1.628 }, { "AC1", 2.206, 0.000, 1.183 }, { "AO1", 2.875, 0.588, 2.298 },
+        { "AC2", 0.731, 0.512, 1.249 }, { "AO2", 0.131, 0.300, 2.188 }, { "AC3", 0.000, 0.000, 0.000 }, { "AO3",-1.125, 0.610, 0.003 } } ,
+      { { "V01", 2.758, 2.629, 3.794 }, { "V02", 2.490, 5.743,-5.634 }, { "V03", 0.870, 1.227, 5.015 },
+        { "V04",-5.376, 2.851, 3.476 }, { "V05",-3.243, 3.161, 4.321 }, { "V06",-1.485,-2.860, 2.153 },
+        { "V07",-3.001,-0.086,-6.081 }, { "V08", 2.412,-2.704,-0.215 }, { "V09", 3.461, 0.901,-3.155 }, { "V10",-0.204, 4.505,-2.072 } } ,
+      { { "C1",  2.178, 0.000, 1.206 }, { "C2",  0.733, 0.508, 1.236 }, { "C3",  0.000, 0.000, 0.000 },
+        { "C4",  0.728, 0.462,-1.271 }, { "C5",  2.172, 0.000,-1.203 }, { "O1",  2.874, 0.596, 2.298 },
+        { "O2",  0.088, 0.115, 2.439 }, { "O3", -1.357, 0.457,-0.031 }, { "O4",  0.635, 1.868,-1.478 }, { "O5", 2.817, 0.460, 0.003 } }
+    } };
 
 
-    },
-    {
-  	  "BMA", "nglycan" , 12, {
-        { "PK1", 2.201, 0, 1.208 }, { "PK1", 0.734, 0.434, 1.265 }, { "PK1", 0, 0, 0 },
-        { "PK1", 0.741, 0.484, -1.238 }, { "PK1", 2.19, 0, -1.202 }, { "PK1", 3.021, 0.511, -2.372 },
-        { "PK1", -1.334, 0.51, 0.008 }, { "PK1", 2.823, 0.465, 0.004 }, { "PK1", 3.075, 1.936, -2.385 },
-        { "PK1", 2.856, 0.535, 2.391 }
-      }, {
-        { "VD1", 1, 3, -1 }, { "VD1", 0.75, 8.88178e-16, 4 }, { "VD1", 5, -1.75, 1.75 },
-        { "VD1", 3, -0.5, -4.75 }, { "VD1", 5, 1.75, -0.25 }, { "VD1", 0.5, -2.75, -0.75 },
-        { "VD1", -3.25, 1.5, -2.25 }, { "VD1", 4, 1.5, 4.5 }, { "VD1", -2.25, -2.5, 5 },
-        { "VD1", 0.75, 4.5, 2 }
-      }, {
-        { "ATM", 2.201, 0, 1.208 }, { "ATM", 0.734, 0.434, 1.265 }, { "ATM", 0, 0, 0 },
-        { "ATM", 0.741, 0.484, -1.238 }, { "ATM", 2.19, 0, -1.202 }, { "ATM", 3.021, 0.511, -2.372 },
-        { "ATM", 0.648, 1.845, 1.439 }, { "ATM", -1.334, 0.51, 0.008 }, { "ATM", 0.102, -0.003, -2.417 },
-        { "ATM", 2.823, 0.465, 0.004 }, { "ATM", 3.075, 1.936, -2.385 }, { "ATM", 2.856, 0.535, 2.391 }
-      }
-    },
-    // Mihaela's mannose
-    {
-      "MAN", "nglycan" , 12,         ////4C1 //////////////////////////////////////////////////
-      { { "PK1", 2.198, 0, 1.218 }, { "PK1", 0.747, 0.45, 1.245 }, { "PK1", 0, 0, 0 },
-            { "PK1", 0.712, 0.474, -1.254 }, { "PK1", 2.17, -0, -1.202 }, { "PK1", 2.989, 0.567, -2.34 },
-            { "PK1", 0.709, 1.872, 1.383 }, { "PK1", -1.363, 0.473, 0.019 }, { "PK1", 0.145, -0.059, -2.437 },
-            { "PK1", 2.809, 0.433, 0.008 }, { "PK1", 2.222, -1.414, 1.317 } } ,
-          { { "VD1", 2.5, -1.75, -4.75 }, { "VD1", 0.5, -0.5, 6.5 }, { "VD1", 2.5, 1.75, 3.25 },
-            { "VD1", -1, 2.25, -2 }, { "VD1", -1.75, -5.25, 1.75 }, { "VD1", 1.75, -3.75, -4.75 },
-            { "VD1", -3, 5, -0.5 }, { "VD1", 5, 0.75, 1.25 }, { "VD1", 2.25, 1.5, 5.75 },
-            { "VD1", -2.75, 2.25, 2 }, { "VD1", 5.25, -0.75, 3.25 } } ,
-          { { "ATM", 2.198, 0, 1.218 }, { "ATM", 0.747, 0.45, 1.245 }, { "ATM", 0, 0, 0 },
-            { "ATM", 0.712, 0.474, -1.254 }, { "ATM", 2.17, -0, -1.202 }, { "ATM", 2.989, 0.567, -2.34 },
-            { "ATM", 0.709, 1.872, 1.383 }, { "ATM", -1.363, 0.473, 0.019 }, { "ATM", 0.145, -0.059, -2.437 },
-            { "ATM", 2.809, 0.433, 0.008 }, { "ATM", 2.981, 2.005, -2.359 }, { "ATM", 2.222, -1.414, 1.317 } }
-    }
-  };
+//     {
+//   	  "BMA", "nglycan" , 12, {
+//         { "PK1", 2.201, 0, 1.208 }, { "PK1", 0.734, 0.434, 1.265 }, { "PK1", 0, 0, 0 },
+//         { "PK1", 0.741, 0.484, -1.238 }, { "PK1", 2.19, 0, -1.202 }, { "PK1", 3.021, 0.511, -2.372 },
+//         { "PK1", -1.334, 0.51, 0.008 }, { "PK1", 2.823, 0.465, 0.004 }, { "PK1", 3.075, 1.936, -2.385 },
+//         { "PK1", 2.856, 0.535, 2.391 }
+//       }, {
+//         { "VD1", 1, 3, -1 }, { "VD1", 0.75, 8.88178e-16, 4 }, { "VD1", 5, -1.75, 1.75 },
+//         { "VD1", 3, -0.5, -4.75 }, { "VD1", 5, 1.75, -0.25 }, { "VD1", 0.5, -2.75, -0.75 },
+//         { "VD1", -3.25, 1.5, -2.25 }, { "VD1", 4, 1.5, 4.5 }, { "VD1", -2.25, -2.5, 5 },
+//         { "VD1", 0.75, 4.5, 2 }
+//       }, {
+//         { "ATM", 2.201, 0, 1.208 }, { "ATM", 0.734, 0.434, 1.265 }, { "ATM", 0, 0, 0 },
+//         { "ATM", 0.741, 0.484, -1.238 }, { "ATM", 2.19, 0, -1.202 }, { "ATM", 3.021, 0.511, -2.372 },
+//         { "ATM", 0.648, 1.845, 1.439 }, { "ATM", -1.334, 0.51, 0.008 }, { "ATM", 0.102, -0.003, -2.417 },
+//         { "ATM", 2.823, 0.465, 0.004 }, { "ATM", 3.075, 1.936, -2.385 }, { "ATM", 2.856, 0.535, 2.391 }
+//       },
+//     },
+//     // Mihaela's mannose
+//     {
+//       "MAN", "nglycan" , 12,         
+//       { { "PK1", 2.198, 0, 1.218 }, { "PK1", 0.747, 0.45, 1.245 }, { "PK1", 0, 0, 0 },
+//             { "PK1", 0.712, 0.474, -1.254 }, { "PK1", 2.17, -0, -1.202 }, { "PK1", 2.989, 0.567, -2.34 },
+//             { "PK1", 0.709, 1.872, 1.383 }, { "PK1", -1.363, 0.473, 0.019 }, { "PK1", 0.145, -0.059, -2.437 },
+//             { "PK1", 2.809, 0.433, 0.008 }, { "PK1", 2.222, -1.414, 1.317 } } ,
+//           { { "VD1", 2.5, -1.75, -4.75 }, { "VD1", 0.5, -0.5, 6.5 }, { "VD1", 2.5, 1.75, 3.25 },
+//             { "VD1", -1, 2.25, -2 }, { "VD1", -1.75, -5.25, 1.75 }, { "VD1", 1.75, -3.75, -4.75 },
+//             { "VD1", -3, 5, -0.5 }, { "VD1", 5, 0.75, 1.25 }, { "VD1", 2.25, 1.5, 5.75 },
+//             { "VD1", -2.75, 2.25, 2 }, { "VD1", 5.25, -0.75, 3.25 } } ,
+//           { { "ATM", 2.198, 0, 1.218 }, { "ATM", 0.747, 0.45, 1.245 }, { "ATM", 0, 0, 0 },
+//             { "ATM", 0.712, 0.474, -1.254 }, { "ATM", 2.17, -0, -1.202 }, { "ATM", 2.989, 0.567, -2.34 },
+//             { "ATM", 0.709, 1.872, 1.383 }, { "ATM", -1.363, 0.473, 0.019 }, { "ATM", 0.145, -0.059, -2.437 },
+//             { "ATM", 2.809, 0.433, 0.008 }, { "ATM", 2.981, 2.005, -2.359 }, { "ATM", 2.222, -1.414, 1.317 } }
+//    }
+//   };
 }
 
 
 int sails::data::number_of_fingerprints () {
-    //return sizeof(sails::data::fingerprint_list) / sizeof(sails::data::fingerprint_list[0]);
     return fingerprint_list.size();
 }
