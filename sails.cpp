@@ -34,7 +34,7 @@ int main( int argc, char** argv )
     clipper::String ipcodes =   "NONE";
     std::vector<clipper::String> input_codes;
     double res_in = 2.0;         // Resolution limit
-    int nhit = 10;
+    int nhit = 20;
     int verbose = 0;
     double step = 10; // default value, works fine for pyranoses
     bool useMap = false;

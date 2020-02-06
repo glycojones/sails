@@ -70,6 +70,7 @@ if(DEVKIT)
   if (APPLE)
     find_path(PYTHON_INCLUDE_DIR NAMES Python.h
               HINTS /usr/local/Cellar/python/3.7.3/Frameworks/Python.framework/Versions/3.7/include/python3.7m
+		    /usr/local/Cellar/python/3.7.5/Frameworks/Python.framework/Versions/3.7/include/python3.7m
               NO_DEFAULT_PATH )
   else()
     find_path(PYTHON_INCLUDE_DIR NAMES Python.h

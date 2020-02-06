@@ -94,6 +94,10 @@ std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_
     clipper::Coord_grid cg = grid.deindex( rslts[i].trn );  // coord in grid
     const int index0 = mxgr.index( cg );                    // index in list
 
+    // std::cout << "index_lists.size(): " << index_lists.size() << std::endl;
+    // std::cout << "mapbox[index0]: " << mapbox[index0] << std::endl;
+    // std::cout << "rhocut: " << rhocut << std::endl;
+
     if ( mapbox[index0] > rhocut )
     {
       for ( int r = 0; r < index_lists.size(); r++ )
@@ -105,6 +109,7 @@ std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_
 
         while ( hi - lo > bestlim )
         {                     // loop over points
+            // std::cout << "The first hi is higher than the first lo" << std::endl;
             hi = std::min( hi, mapbox[index0+index_list[i].first ] );
             lo = std::max( lo, mapbox[index0+index_list[i].second] );
             i++;
@@ -113,6 +118,7 @@ std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_
 
         if ( hi - lo > bestlim )
         {
+          //  std::cout << "The lowest hi is higher than the highest lo" << std::endl;
             bestlim = bestscr = hi - lo;
             bestrot = r;
         }

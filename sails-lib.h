@@ -74,6 +74,8 @@ namespace sails
             std::string name_short;
             clipper::String context;
             int num_control_points;
+            int num_peaks;   //number of peaks in a fingerprint
+            int num_voids;   //number of voids in a fingerprint
             dummy_atom peaks[20];
             dummy_atom voids[20];
             dummy_atom atoms[20];

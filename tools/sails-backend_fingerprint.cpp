@@ -471,9 +471,9 @@ int main( int argc, char** argv )
             //          << min_map.interp<clipper::Interp_cubic>(min_map.coord_map(mol[0][0][natm-1].coord_orth()))
             //          << ", assigning number " << natm << std::endl;
 
-            std::cout << "{ \"PK1\", " << mol[0][0][natm-1].coord_orth().x() << " "
-                      << mol[0][0][natm-1].coord_orth().y() << " "
-                      << mol[0][0][natm-1].coord_orth().z() << " }" << std::endl;
+            std::cout << "{ \"PK1\", " << mol[0][0][natm-1].coord_orth().x() << ", "
+                      << mol[0][0][natm-1].coord_orth().y() << ", "
+                      << mol[0][0][natm-1].coord_orth().z() << " }, " << std::endl;
 
             npeaks++;
         }
@@ -575,9 +575,9 @@ int main( int argc, char** argv )
         coord_out << minimum_spot.z() << "  1.00 30.00       VOIDS" << std::endl;
 
 
-        std::cout << "{ \"VD1\", " << minimum_spot.x() << " "
-                  << minimum_spot.y() << " "
-                  << minimum_spot.z() << " }" << std::endl;
+        std::cout << "{ \"VD1\", " << minimum_spot.x() << ", "
+                  << minimum_spot.y() << ", "
+                  << minimum_spot.z() << " }, " << std::endl;
     }
 
     coord_out << "TER" << std::endl;
@@ -624,11 +624,13 @@ int main( int argc, char** argv )
         coord_out.precision(3);
         coord_out << mol[0][0][natm-1].coord_orth().z() << "  1.00 30.00       MODEL" << std::endl;
 
-        std::cout << "{ \"ATM\", " << mol[0][0][natm-1].coord_orth().x() << " "
-                  << mol[0][0][natm-1].coord_orth().y() << " "
-                  << mol[0][0][natm-1].coord_orth().z() << " }" << std::endl;
+        std::cout << "{ \"ATM\", " << mol[0][0][natm-1].coord_orth().x() << ", "
+                  << mol[0][0][natm-1].coord_orth().y() << ", "
+                  << mol[0][0][natm-1].coord_orth().z() << " }, " << std::endl;
 
     }
+
+    std::cout << "Number of peaks: " << npeaks << std::endl;
 
     coord_out << "END" << std::endl;
 
