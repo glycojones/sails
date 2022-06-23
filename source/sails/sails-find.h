@@ -12,7 +12,7 @@
 /*! Result class */
 class SearchResult {
   public:
-    float score; int rot; int trn; std::string name_short; 
+    float score; int rot; int trn; std::string name_short; clipper::Mat33<> sugar_rot;
     bool operator <( SearchResult other ) const {
       return score < other.score;
     }
