@@ -289,7 +289,7 @@ int main( int argc, char** argv )
 
 		std::vector<SearchResult> mol_results = sails::sugar_results (xwrk, options, step, nhit);
 		clipper::MiniMol mol_new = sails::build_sugars (mol_results, xwrk, options, step, nhit);
-		//clipper::MiniMol mol_new = sails::build_sugars (xwrk, options, step, nhit);
+		// clipper::MiniMol mol_new = sails::build_sugars (xwrk, options, step, nhit);
 
     clipper::MMDBfile pdbfile;
     pdbfile.export_minimol( mol_new );

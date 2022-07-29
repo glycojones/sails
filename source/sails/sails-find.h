@@ -12,7 +12,10 @@
 /*! Result class */
 class SearchResult {
   public:
-    float score; int rot; int trn; std::string name_short; clipper::Mat33<> sugar_rot;
+    float score; int rot; int trn; 
+    std::string name_short; 
+    clipper::Mat33<> sugar_rot; 
+    float bestcut;
     bool operator <( SearchResult other ) const {
       return score < other.score;
     }
@@ -33,7 +36,8 @@ class SSfind {
                                       const std::vector<clipper::RTop_orth>& ops,
                                       const double rhocut,
                                       const double frccut = 0.0,
-                                      std::string name_short = "") const; 
+                                      std::string name_short = "",
+                                      float bestcut = 0) const; 
 
   private:
     std::vector<float> mapbox;

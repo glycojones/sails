@@ -51,7 +51,7 @@ void SSfind::prep_search( const clipper::Xmap<float>& xmap, const double rhocut,
 }
 
 
-std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_cs, const std::vector<clipper::RTop_orth>& ops, const double rhocut, const double frccut, std::string name_short ) const
+std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_cs, const std::vector<clipper::RTop_orth>& ops, const double rhocut, const double frccut, std::string name_short, float bestcut ) const
 //std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_cs, const std::vector<clipper::RTop_orth>& ops, const double rhocut, const double frccut ) const
 {
   // make a list of indexed, integerised, rotated lists
@@ -78,12 +78,13 @@ std::vector<SearchResult> SSfind::search( const std::vector<Pair_coord>& target_
   // make list of results
   SearchResult rsltnull = { 0.0, -1, -1 };
   rsltnull.name_short = name_short; 
+  rsltnull.bestcut = bestcut;
   std::vector<SearchResult> rslts( srctrn.size(), rsltnull ); 
   
   for ( int i = 0; i < rslts.size(); i++ ) rslts[i].trn = srctrn[i];
 
   // find ss elements
-  float bestcut = 0.8;  // optimisation: abandon searches where score < bestcut
+  // float bestcut = 0;  // optimisation: abandon searches where score < bestcut
   const float bestscl( frccut );
 
 

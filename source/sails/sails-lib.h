@@ -80,6 +80,7 @@ namespace sails
             int num_control_points;
             int num_peaks;   //number of peaks in a fingerprint
             int num_voids;   //number of voids in a fingerprint
+            float bestcut;
             dummy_atom peaks[20];
             dummy_atom voids[20];
             dummy_atom atoms[20];
@@ -160,7 +161,7 @@ namespace sails
     void process_validation_options ( clipper::String validation_string, sails::data::validation_flags &flags );
     void get_input_codes ( clipper::String input_string, std::vector<clipper::String> &codes);
 		void process_building_options ( clipper::String building_options, sails::data::build_options &flags );
-    //clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
+    // clipper::MiniMol build_sugars ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
     std::vector<SearchResult> sugar_results ( clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
     clipper::MiniMol build_sugars ( std::vector<SearchResult> results, clipper::Xmap<float>& xwrk, sails::data::build_options& options, double step, int nhit );
 
