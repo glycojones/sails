@@ -42,7 +42,7 @@ Lead authors: Mihaela Atanasova, Kevin Cowtan and Jon Agirre (YSBL, University o
 
 8.) source ccp4.envsetup-sh
 
-9.) pip install -r requirements.txt
+9.) pip3 install -r requirements.txt
 
 10.) python3 setup.py install
 
